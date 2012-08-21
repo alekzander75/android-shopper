@@ -3,7 +3,7 @@ package name.alr.android_shopper;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import android.widget.ListView;
 /**
  * @author alopezruiz@gmail.com (Alejandro Lopez Ruiz)
  */
-public class MainActivity extends ListActivity {
+public class MainActivity extends Activity {
 
     private ShopperOpenHelper shopperOpenHelper;
 
@@ -24,7 +24,7 @@ public class MainActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         this.shopperOpenHelper = new ShopperOpenHelper(this);
         this.database = this.shopperOpenHelper.getWritableDatabase();
@@ -39,7 +39,10 @@ public class MainActivity extends ListActivity {
         }
         cursor.close();
 
-        setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, items));
+        // Get references to UI widgets
+        ListView listView = (ListView) findViewById(R.id.mainListView);
+
+        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, items));
 
         // setListAdapter(new ArrayAdapter<String>(this,
         // android.R.layout.simple_list_item_multiple_choice, GENRES));
@@ -58,8 +61,6 @@ public class MainActivity extends ListActivity {
         //
         // }
         // });
-
-        final ListView listView = getListView();
 
         listView.setItemsCanFocus(false);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);

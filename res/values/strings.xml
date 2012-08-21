@@ -3,5 +3,6 @@
     <string name="app_name">Android Shopper</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Shopper</string>
+    <string name="new_to_do_item">New To Do Item</string>
 
 </resources>
