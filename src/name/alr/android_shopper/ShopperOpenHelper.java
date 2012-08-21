@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class ShopperOpenHelper extends SQLiteOpenHelper {
 
     private static final String ID_COLUMN = "id";
-    private static final String NAME_COLUMN = "name";
+    public static final String NAME_COLUMN = "name";
     private static final String ITEM_TABLE = "item";
 
     public ShopperOpenHelper(Context context) {
@@ -40,8 +40,8 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     }
 
     public static Cursor getItems(SQLiteDatabase db) {
-//        return db.query(ITEM_TABLE, new String[] { ID_COLUMN, NAME_COLUMN }, null, null, null, null, NAME_COLUMN);
-        return db.query(ITEM_TABLE, null, null, null, null, null, NAME_COLUMN);
+        return db.query(ITEM_TABLE, new String[] { ID_COLUMN + " as _id", NAME_COLUMN }, null, null, null, null, NAME_COLUMN);
+//        return db.query(ITEM_TABLE, null, null, null, null, null, NAME_COLUMN);
     }
 
     @Override
