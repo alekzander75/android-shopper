@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * @author alopezruiz@gmail.com (Alejandro Lopez Ruiz)
+ */
 public class ShopperOpenHelper extends SQLiteOpenHelper {
 
     private static final String ID_COLUMN = "id";

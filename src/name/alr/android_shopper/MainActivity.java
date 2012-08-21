@@ -11,6 +11,9 @@ import android.view.Menu;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+/**
+ * @author alopezruiz@gmail.com (Alejandro Lopez Ruiz)
+ */
 public class MainActivity extends ListActivity {
 
     private ShopperOpenHelper shopperOpenHelper;
