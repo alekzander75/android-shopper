@@ -1,4 +1,4 @@
-package name.alr.android_shopper;
+package name.alr.android_shopper.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,37 +11,35 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class ShopperOpenHelper extends SQLiteOpenHelper {
 
-    private static final String ID_COLUMN = "id";
-    public static final String NAME_COLUMN = "name";
-    private static final String ITEM_TABLE = "item";
+    private static final String[] GET_ITEMS__COLUMNS = new String[] { ShopItem.ID + " as _id", ShopItem.NAME };
 
     public ShopperOpenHelper(Context context) {
         super(context, "main", null, 1);
     }
 
     public static String getItemName(Cursor cursor) {
-        return cursor.getString(cursor.getColumnIndexOrThrow(NAME_COLUMN));
+        return cursor.getString(cursor.getColumnIndexOrThrow(ShopItem.NAME));
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + ITEM_TABLE + " (" + ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + NAME_COLUMN + " TEXT not null UNIQUE);");
+        db.execSQL("CREATE TABLE " + ShopItem.TABLE + " (" + ShopItem.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + ShopItem.NAME + " TEXT not null UNIQUE);");
 
         addTestData(db);
     }
 
     private static void addTestData(SQLiteDatabase db) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(NAME_COLUMN, "Carrots");
-        db.insertOrThrow(ITEM_TABLE, null, contentValues);
-        contentValues.put(NAME_COLUMN, "Tomatoes");
-        db.insertOrThrow(ITEM_TABLE, null, contentValues);
+        contentValues.put(ShopItem.NAME, "Carrots");
+        db.insertOrThrow(ShopItem.TABLE, null, contentValues);
+        contentValues.put(ShopItem.NAME, "Tomatoes");
+        db.insertOrThrow(ShopItem.TABLE, null, contentValues);
     }
 
     public static Cursor getItems(SQLiteDatabase db) {
-        return db.query(ITEM_TABLE, new String[] { ID_COLUMN + " as _id", NAME_COLUMN }, null, null, null, null, NAME_COLUMN);
-//        return db.query(ITEM_TABLE, null, null, null, null, null, NAME_COLUMN);
+        return db.query(ShopItem.TABLE, GET_ITEMS__COLUMNS, null, null, null, null, ShopItem.NAME);
+        // return db.query(ShopItem.ITEM_TABLE, null, null, null, null, null, ShopItem.NAME_COLUMN);
     }
 
     @Override
@@ -52,7 +50,7 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onOpen(SQLiteDatabase db) {
         if (!db.isReadOnly()) {
-            db.delete(ITEM_TABLE, null, null);
+            db.delete(ShopItem.TABLE, null, null);
             addTestData(db);
         }
     }

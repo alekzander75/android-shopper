@@ -1,5 +1,7 @@
 package name.alr.android_shopper;
 
+import name.alr.android_shopper.database.ShopItem;
+import name.alr.android_shopper.database.ShopperOpenHelper;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -50,7 +52,7 @@ public class MainActivity extends Activity {
         // android.R.layout.simple_list_item_multiple_choice, GENRES));
 
         SimpleCursorAdapter simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, cursor,
-                new String[] { ShopperOpenHelper.NAME_COLUMN }, new int[] { R.id.mainListEntryText });
+                new String[] { ShopItem.NAME }, new int[] { R.id.mainListEntryText });
         listView.setAdapter(simpleCursorAdapter);
 
         listView.setItemsCanFocus(false);
