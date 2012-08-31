@@ -6,11 +6,11 @@
     android:orientation="vertical" >
 
     <EditText
-        android:id="@+id/myEditText"
+        android:id="@+id/itemEditText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
-        android:text="@string/new_to_do_item" />
+        android:visibility="gone" />
 
     <!-- match_parent vs fill_parent ? -->
 

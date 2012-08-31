@@ -38,8 +38,14 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     }
 
     public static Cursor getItems(SQLiteDatabase db) {
-        return db.query(ShopItem.TABLE, GET_ITEMS__COLUMNS, null, null, null, null, ShopItem.NAME);
+        return db.query(ShopItem.TABLE, GET_ITEMS__COLUMNS, null, null, null, null, ShopItem.NAME + " COLLATE NOCASE");
         // return db.query(ShopItem.ITEM_TABLE, null, null, null, null, null, ShopItem.NAME_COLUMN);
+    }
+
+    public static void addItem(SQLiteDatabase db, String name) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ShopItem.NAME, name);
+        db.insertOrThrow(ShopItem.TABLE, null, contentValues);
     }
 
     @Override
@@ -50,9 +56,13 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onOpen(SQLiteDatabase db) {
         if (!db.isReadOnly()) {
-            db.delete(ShopItem.TABLE, null, null);
-            addTestData(db);
+            // deleteAllItems(db);
+            // addTestData(db);
         }
+    }
+
+    public static void deleteAllItems(SQLiteDatabase db) {
+        db.delete(ShopItem.TABLE, null, null);
     }
 
 }
