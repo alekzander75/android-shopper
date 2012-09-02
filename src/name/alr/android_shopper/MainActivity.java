@@ -39,7 +39,6 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Inflate your view
 		setContentView(R.layout.activity_main);
 
 		this.shopperOpenHelper = new ShopperOpenHelper(this);
@@ -59,13 +58,6 @@ public class MainActivity extends Activity {
 		// cursor.close();
 
 		this.listView = (ListView) findViewById(R.id.mainListView);
-
-		// listView.setAdapter(new ArrayAdapter<String>(this,
-		// android.R.layout.simple_list_item_multiple_choice,
-		// items));
-
-		// setListAdapter(new ArrayAdapter<String>(this,
-		// android.R.layout.simple_list_item_multiple_choice, GENRES));
 
 		this.listAdapter = new SimpleCursorAdapter(this, R.layout.main_list_entry,
 				this.itemsCursor, new String[] { ShopItem.NAME },
