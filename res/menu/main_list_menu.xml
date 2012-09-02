@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/add_item_menu_item"
+        android:alphabeticShortcut="a"
+        android:icon="@drawable/add_new_item"
+        android:numericShortcut="0"
+        android:orderInCategory="100"
+        android:title="@string/add_new_item"/>
+
+    <item
+        android:id="@+id/remove_item_menu_item"
+        android:alphabeticShortcut="r"
+        android:icon="@drawable/remove_item"
+        android:numericShortcut="1"
+        android:orderInCategory="200"
+        android:title="@string/remove"/>
+
+    <item
+        android:id="@+id/remove_all_items_menu_item"
+        android:alphabeticShortcut="l"
+        android:icon="@drawable/remove_item"
+        android:numericShortcut="2"
+        android:orderInCategory="300"
+        android:title="@string/remove_all"/>
+
+</menu>

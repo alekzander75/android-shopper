@@ -10,6 +10,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.widget.AdapterView;
@@ -22,10 +23,6 @@ import android.widget.SimpleCursorAdapter;
  * @author alopezruiz@gmail.com (Alejandro Lopez Ruiz)
  */
 public class MainActivity extends Activity {
-
-	private static final int ADD_NEW_ITEM = Menu.FIRST;
-	private static final int REMOVE_ITEM = Menu.FIRST + 1;
-	private static final int REMOVE_ALL_ITEM = Menu.FIRST + 2;
 
 	private ShopperOpenHelper shopperOpenHelper;
 
@@ -89,26 +86,38 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// getMenuInflater().inflate(R.menu.activity_main, menu);
+		getMenuInflater().inflate(R.menu.main_list_menu, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
 
-		super.onCreateOptionsMenu(menu);
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
 
-		// Create and add new menu items.
-		MenuItem itemAdd = menu.add(0, ADD_NEW_ITEM, Menu.NONE, R.string.add_new);
-		MenuItem itemRem = menu.add(0, REMOVE_ITEM, Menu.NONE, R.string.remove);
-		MenuItem removeAllItem = menu.add(0, REMOVE_ALL_ITEM, Menu.NONE, R.string.remove_all);
+		switch (item.getItemId()) {
+		case (R.id.add_item_menu_item): {
+			addNewItem();
+			return true;
+		}
+		case (R.id.remove_item_menu_item): {
+			if (this.addingNew) {
+				cancelAdd();
+			} else {
+				removeItem(this.listView.getSelectedItemId());
+			}
+			return true;
+		}
+		case (R.id.remove_all_items_menu_item): {
+			if (this.addingNew) {
+				cancelAdd();
+			} else {
+				removeAllItems();
+			}
+			return true;
+		}
+		}
 
-		// Assign icons
-		itemAdd.setIcon(R.drawable.add_new_item);
-		itemRem.setIcon(R.drawable.remove_item);
-		removeAllItem.setIcon(R.drawable.remove_item);
-
-		// Allocate shortcuts to each of them.
-		itemAdd.setShortcut('0', 'a');
-		itemRem.setShortcut('1', 'r');
-		removeAllItem.setShortcut('2', 'x');
-
-		return true;
+		return false;
 	}
 
 	@Override
@@ -119,7 +128,7 @@ public class MainActivity extends Activity {
 
 		String removeTitle = getString(this.addingNew ? R.string.cancel : R.string.remove);
 
-		MenuItem removeItem = menu.findItem(REMOVE_ITEM);
+		MenuItem removeItem = menu.findItem(R.id.remove_item_menu_item);
 		removeItem.setTitle(removeTitle);
 		removeItem.setVisible(this.addingNew || idx > -1);
 
@@ -131,57 +140,21 @@ public class MainActivity extends Activity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 
 		menu.setHeaderTitle("Selected Item");
-		menu.add(0, REMOVE_ITEM, Menu.NONE, R.string.remove);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		super.onOptionsItemSelected(item);
-
-		switch (item.getItemId()) {
-		case (REMOVE_ITEM): {
-			if (this.addingNew) {
-				cancelAdd();
-			} else {
-				removeItem(this.listView.getSelectedItemId());
+		MenuItem removeItemMenuItem = menu.add(0, R.id.remove_item_menu_item, Menu.NONE,
+				R.string.remove);
+		removeItemMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			public boolean onMenuItemClick(MenuItem item) {
+				AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item
+						.getMenuInfo();
+				removeItem(menuInfo.id);
+				return true;
 			}
-			return true;
-		}
-		case (REMOVE_ALL_ITEM): {
-			if (this.addingNew) {
-				cancelAdd();
-			} else {
-				removeAllItems();
-			}
-			return true;
-		}
-		case (ADD_NEW_ITEM): {
-			addNewItem();
-			return true;
-		}
-		}
-
-		return false;
+		});
 	}
 
 	private void removeAllItems() {
 		shopperOpenHelper.deleteAllItems();
 		MainActivity.this.itemsCursor.requery();
-	}
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		super.onContextItemSelected(item);
-
-		switch (item.getItemId()) {
-		case (REMOVE_ITEM): {
-			AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item
-					.getMenuInfo();
-			removeItem(menuInfo.id);
-			return true;
-		}
-		}
-		return false;
 	}
 
 	private void addNewItem() {
