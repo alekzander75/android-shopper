@@ -45,15 +45,6 @@ public class MainActivity extends Activity {
 
 		startManagingCursor(this.itemsCursor);
 
-		// List<String> items = new ArrayList<String>(cursor.getCount());
-		// if (cursor.moveToFirst()) {
-		// do {
-		// items.add(ShopperOpenHelper.getItemName(cursor));
-		// cursor.moveToNext();
-		// } while (!cursor.isAfterLast());
-		// }
-		// cursor.close();
-
 		this.listView = (ListView) findViewById(R.id.mainListView);
 
 		this.listAdapter = new SimpleCursorAdapter(this, R.layout.main_list_entry,
