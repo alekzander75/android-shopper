@@ -55,7 +55,7 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
 //	}
 
 	public Cursor getItems() {
-		return database.query(ShopItem.TABLE, GET_ITEMS__COLUMNS, null, null, null, null,
+		return this.database.query(ShopItem.TABLE, GET_ITEMS__COLUMNS, null, null, null, null,
 				ShopItem.NAME + " COLLATE NOCASE");
 		// return db.query(ShopItem.ITEM_TABLE, null, null, null, null, null, ShopItem.NAME_COLUMN);
 	}

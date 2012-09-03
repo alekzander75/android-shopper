@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
 		this.shopperOpenHelper = new ShopperOpenHelper(this);
 		this.shopperOpenHelper.initialize();
 
-		this.itemsCursor = shopperOpenHelper.getItems();
+		this.itemsCursor = this.shopperOpenHelper.getItems();
 
 		startManagingCursor(this.itemsCursor);
 
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				if (event.getAction() == KeyEvent.ACTION_DOWN)
 					if (keyCode == KeyEvent.KEYCODE_ENTER) {
-						shopperOpenHelper.addItem(MainActivity.this.itemEditText.getText()
+						MainActivity.this.shopperOpenHelper.addItem(MainActivity.this.itemEditText.getText()
 								.toString().trim());
 						MainActivity.this.itemEditText.setText("");
 						MainActivity.this.itemsCursor.requery();
@@ -144,7 +144,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void removeAllItems() {
-		shopperOpenHelper.deleteAllItems();
+		this.shopperOpenHelper.deleteAllItems();
 		MainActivity.this.itemsCursor.requery();
 	}
 
@@ -155,7 +155,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void removeItem(long id) {
-		shopperOpenHelper.deleteItem(id);
+		this.shopperOpenHelper.deleteItem(id);
 		MainActivity.this.itemsCursor.requery();
 	}
 
