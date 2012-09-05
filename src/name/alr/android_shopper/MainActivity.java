@@ -66,9 +66,11 @@ public class MainActivity extends Activity {
         registerForContextMenu(this.listView);
     }
 
-    private void addItem(String name) {
-        this.shopperOpenHelper.addItem(name);
-        this.itemsCursor.requery();
+    @Override
+    protected void onDestroy() {
+        this.shopperOpenHelper.closeDatabase();
+
+        super.onDestroy();
     }
 
     @Override
@@ -129,23 +131,6 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void removeAllItems() {
-        this.shopperOpenHelper.deleteAllItems();
-        MainActivity.this.itemsCursor.requery();
-    }
-
-    private void removeItem(long id) {
-        this.shopperOpenHelper.deleteItem(id);
-        MainActivity.this.itemsCursor.requery();
-    }
-
-    @Override
-    protected void onDestroy() {
-        this.shopperOpenHelper.closeDatabase();
-
-        super.onDestroy();
-    }
-
     @Override
     protected Dialog onCreateDialog(int id, Bundle args) {
         switch (id) {
@@ -203,14 +188,6 @@ public class MainActivity extends Activity {
         return null;
     }
 
-    private String getTrimmedString(EditText editText) {
-        return getTrimmedString(editText.getText());
-    }
-
-    private String getTrimmedString(Editable editable) {
-        return editable.toString().trim();
-    }
-
     @Override
     protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
         switch (id) {
@@ -225,8 +202,31 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void removeAllItems() {
+        this.shopperOpenHelper.deleteAllItems();
+        this.itemsCursor.requery();
+    }
+
+    private void removeItem(long id) {
+        this.shopperOpenHelper.deleteItem(id);
+        this.itemsCursor.requery();
+    }
+
+    private void addItem(String name) {
+        this.shopperOpenHelper.addItem(name);
+        this.itemsCursor.requery();
+    }
+
     private EditText getAddItemEditText() {
         return this.addItemEditText;
     };
+
+    private String getTrimmedString(EditText editText) {
+        return getTrimmedString(editText.getText());
+    }
+
+    private String getTrimmedString(Editable editable) {
+        return editable.toString().trim();
+    }
 
 }
