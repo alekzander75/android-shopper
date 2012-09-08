@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_activity);
 
         this.shopperOpenHelper = new ShopperOpenHelper(this);
         this.shopperOpenHelper.initialize();
@@ -138,7 +138,7 @@ public class MainActivity extends Activity {
             AlertDialog.Builder addItemDialogBuilder = new AlertDialog.Builder(this);
             addItemDialogBuilder.setIcon(R.drawable.add_new_item);
             addItemDialogBuilder.setTitle(getString(R.string.add_new_item));
-            View view = getLayoutInflater().inflate(R.layout.add_item_dialog_layout, null);
+            View view = getLayoutInflater().inflate(R.layout.add_item_dialog, null);
             addItemDialogBuilder.setView(view);
 
             this.addItemEditText = (EditText) view.findViewById(R.id.addItemEditText);
