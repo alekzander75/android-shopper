@@ -24,4 +24,11 @@
         android:orderInCategory="300"
         android:title="@string/remove_all"/>
 
+        <item
+        android:id="@+id/preferences_menu_item"
+        android:alphabeticShortcut="p"
+        android:numericShortcut="3"
+        android:orderInCategory="400"
+        android:title="Preferences"/>
+    
 </menu>

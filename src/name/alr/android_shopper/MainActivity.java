@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
@@ -94,6 +95,10 @@ public class MainActivity extends Activity {
         }
         case (R.id.remove_all_items_menu_item): {
             removeAllItems();
+            return true;
+        }
+        case (R.id.preferences_menu_item): {
+            startActivity(new Intent(this, ShopperPreferenceActivity.class));
             return true;
         }
         }
