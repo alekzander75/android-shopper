@@ -3,11 +3,12 @@ package name.alr.android_shopper.database;
 /**
  * @author alopezruiz@gmail.com (Alejandro Lopez Ruiz)
  */
-public class ShopItem {
+public interface ShopItem {
 
-    static final String TABLE = "item";
+    final String TABLE = "item";
 
-    static final String ID = "id";
-    public static final String NAME = "name";
+    final String ID = "id";
+    final String SHOP_ORDER = "shop_order";
+    final String NAME = "name";
 
 }
