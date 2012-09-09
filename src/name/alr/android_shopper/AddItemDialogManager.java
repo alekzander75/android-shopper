@@ -26,7 +26,8 @@ public class AddItemDialogManager {
 
     private AlertDialog dialog;
 
-    public AddItemDialogManager(final Activity activity, final int dialogId, final DialogSubmitListener dialogSubmitListener) {
+    public AddItemDialogManager(final Activity activity, final int dialogId,
+            final DialogSubmitListener dialogSubmitListener) {
         AlertDialog.Builder addItemDialogBuilder = new AlertDialog.Builder(activity);
         addItemDialogBuilder.setIcon(R.drawable.add_new_item);
         addItemDialogBuilder.setTitle(activity.getString(R.string.add_new_item));
@@ -78,10 +79,6 @@ public class AddItemDialogManager {
         this.dialog = addItemDialogBuilder.create();
     }
 
-    private EditText getAddItemEditText() {
-        return this.addItemEditText;
-    };
-
     public Dialog getDialog() {
         return this.dialog;
     }
@@ -92,5 +89,9 @@ public class AddItemDialogManager {
         }
         getAddItemEditText().setText("");
     }
+
+    private EditText getAddItemEditText() {
+        return this.addItemEditText;
+    };
 
 }

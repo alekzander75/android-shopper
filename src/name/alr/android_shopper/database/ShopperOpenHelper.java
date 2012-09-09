@@ -27,20 +27,11 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + ShopItem.TABLE + " (" + ShopItem.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ShopItem.NAME + " TEXT not null UNIQUE);");
-        // addTestData(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // NOOP
-    }
-
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        if (!db.isReadOnly()) {
-            // deleteAllItems(db);
-            // addTestData(db);
-        }
     }
 
     public void closeDatabase() {
@@ -70,13 +61,5 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     public void deleteItem(long id) {
         this.database.delete(ShopItem.TABLE, ShopItem.ID + " = ?", new String[] { Long.toString(id) });
     }
-
-    // private static void addTestData(SQLiteDatabase db) {
-    // ContentValues contentValues = new ContentValues();
-    // contentValues.put(ShopItem.NAME, "Carrots");
-    // db.insertOrThrow(ShopItem.TABLE, null, contentValues);
-    // contentValues.put(ShopItem.NAME, "Tomatoes");
-    // db.insertOrThrow(ShopItem.TABLE, null, contentValues);
-    // }
 
 }
