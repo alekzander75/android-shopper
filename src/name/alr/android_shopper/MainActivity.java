@@ -1,9 +1,13 @@
 package name.alr.android_shopper;
 
+import java.io.FileOutputStream;
+
 import name.alr.android_shopper.database.ShopItem;
 import name.alr.android_shopper.database.ShopperOpenHelper;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -42,7 +46,7 @@ public class MainActivity extends Activity {
         this.shopperOpenHelper = new ShopperOpenHelper(this);
         this.shopperOpenHelper.initialize();
 
-        this.itemsCursor = this.shopperOpenHelper.getItems();
+        this.itemsCursor = this.shopperOpenHelper.getListItems();
         startManagingCursor(this.itemsCursor);
 
         this.listAdapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor,
@@ -84,6 +88,10 @@ public class MainActivity extends Activity {
         }
         case (R.id.remove_all_items_menu_item): {
             removeAllItems();
+            return true;
+        }
+        case (R.id.export_items_menu_item): {
+            exportItems();
             return true;
         }
         case (R.id.preferences_menu_item): {
@@ -161,6 +169,31 @@ public class MainActivity extends Activity {
     private void addItem(String name) {
         this.shopperOpenHelper.addItem(name);
         this.itemsCursor.requery();
+    }
+
+    @SuppressLint("WorldReadableFiles")
+    private void exportItems() {
+        try {
+            FileOutputStream stream = openFileOutput("shopper-items.tsv", Context.MODE_WORLD_READABLE);
+            try {
+                Cursor cursor = this.shopperOpenHelper.getItems();
+                try {
+                    if (cursor.moveToFirst()) {
+                        do {
+                            stream.write((ShopperOpenHelper.getItemShopOrder(cursor) + "\t"
+                                    + ShopperOpenHelper.getItemName(cursor) + "\n").getBytes());
+                            cursor.moveToNext();
+                        } while (!cursor.isAfterLast());
+                    }
+                } finally {
+                    cursor.close();
+                }
+            } finally {
+                stream.close();
+            }
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to export items.", exception);
+        }
     }
 
 }

@@ -19,7 +19,7 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     private static final String MAX_ITEMS_SHOP_ORDER_SQL = "select max(" + ShopItem.SHOP_ORDER + ") from "
             + ShopItem.TABLE;
 
-    private static final String[] GET_ITEMS__COLUMNS = new String[] { ShopItem.ID + " as _id", ShopItem.NAME };
+    private static final String[] GET_LIST_ITEMS__COLUMNS = new String[] { ShopItem.ID + " as _id", ShopItem.NAME };
 
     private SQLiteDatabase database;
 
@@ -51,11 +51,19 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
         return cursor.getInt(cursor.getColumnIndexOrThrow(ShopItem.SHOP_ORDER));
     }
 
-    public Cursor getItems() {
-        return this.database.query(ShopItem.TABLE, GET_ITEMS__COLUMNS, null, null, null, null, ShopItem.SHOP_ORDER);
-        // return this.database.query(ShopItem.TABLE, GET_ITEMS__COLUMNS, null, null, null, null, ShopItem.NAME
+    public static String getItemName(Cursor cursor) {
+        return cursor.getString(cursor.getColumnIndexOrThrow(ShopItem.NAME));
+    }
+
+    public Cursor getListItems() {
+        return this.database
+                .query(ShopItem.TABLE, GET_LIST_ITEMS__COLUMNS, null, null, null, null, ShopItem.SHOP_ORDER);
+        // return this.database.query(ShopItem.TABLE, GET_LIST_ITEMS__COLUMNS, null, null, null, null, ShopItem.NAME
         // + " COLLATE NOCASE");
-        // return db.query(ShopItem.ITEM_TABLE, null, null, null, null, null, ShopItem.NAME_COLUMN);
+    }
+
+    public Cursor getItems() {
+        return this.database.query(ShopItem.TABLE, null, null, null, null, null, ShopItem.SHOP_ORDER);
     }
 
     public void addItem(String name) {
