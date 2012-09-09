@@ -30,7 +30,7 @@ public class AddItemDialogManager {
             final DialogSubmitListener dialogSubmitListener) {
         AlertDialog.Builder addItemDialogBuilder = new AlertDialog.Builder(activity);
         addItemDialogBuilder.setIcon(R.drawable.add_new_item);
-        addItemDialogBuilder.setTitle(activity.getString(R.string.add_new_item));
+        addItemDialogBuilder.setTitle(activity.getString(R.string.add_item__title));
         View view = activity.getLayoutInflater().inflate(R.layout.add_item_dialog, null);
         addItemDialogBuilder.setView(view);
 

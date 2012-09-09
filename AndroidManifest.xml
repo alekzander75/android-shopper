@@ -13,14 +13,14 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/main_activity__label" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ShopperPreferenceActivity" android:label="Preferences"></activity>
+        <activity android:name="ShopperPreferenceActivity" android:label="@string/preferences__label"></activity>
     </application>
 
 </manifest>

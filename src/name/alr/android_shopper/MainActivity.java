@@ -100,7 +100,7 @@ public class MainActivity extends Activity {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         menu.setHeaderTitle("Selected Item");
-        MenuItem removeItemMenuItem = menu.add(0, R.id.remove_item_menu_item, Menu.NONE, R.string.remove);
+        MenuItem removeItemMenuItem = menu.add(0, R.id.remove_item_menu_item, Menu.NONE, R.string.remove_item__title);
         removeItemMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -116,7 +116,7 @@ public class MainActivity extends Activity {
 
         int idx = this.listView.getSelectedItemPosition();
 
-        String removeTitle = getString(R.string.remove);
+        String removeTitle = getString(R.string.remove_item__title);
 
         MenuItem removeItem = menu.findItem(R.id.remove_item_menu_item);
         removeItem.setTitle(removeTitle);
