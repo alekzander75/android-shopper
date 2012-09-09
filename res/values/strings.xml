@@ -8,5 +8,13 @@
     <string name="preferences__label">Preferences</string>
     <string name="remove_item__title">Remove Item</string>
     <string name="remove_all_items__title">Remove All Items</string>
+    <string name="increase_amount">Increase amount</string>
+    <string name="decrease_amount">Decrease amount</string>
+    <string name="increase_item_amount__text">+</string>
+    <string name="decrease_item_amount__text">-</string>
+    <string name="lower_item">Lower item</string>
+    <string name="raise_item_amount__text">^</string>
+    <string name="raise_item">Raise item</string>
+    <string name="lower_item_amount__text">V</string>
 
 </resources>

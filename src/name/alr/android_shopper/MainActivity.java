@@ -49,14 +49,14 @@ public class MainActivity extends Activity {
         this.itemsCursor = this.shopperOpenHelper.getListItems();
         startManagingCursor(this.itemsCursor);
 
-        this.listAdapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor,
-                new String[] { ShopItem.NAME }, new int[] { R.id.mainListEntryText });
+        this.listAdapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor, new String[] {
+                ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
+                R.id.mainListEntryNameTextView });
 
         this.listView = (ListView) findViewById(R.id.mainListView);
         this.listView.setAdapter(this.listAdapter);
         this.listView.setItemsCanFocus(false);
         this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
         registerForContextMenu(this.listView);
     }
 
@@ -122,13 +122,13 @@ public class MainActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        int idx = this.listView.getSelectedItemPosition();
+        int position = this.listView.getSelectedItemPosition();
 
         String removeTitle = getString(R.string.remove_item__title);
 
         MenuItem removeItem = menu.findItem(R.id.remove_item_menu_item);
         removeItem.setTitle(removeTitle);
-        removeItem.setVisible(idx > -1);
+        removeItem.setVisible(position > -1);
 
         return true;
     }
@@ -181,6 +181,7 @@ public class MainActivity extends Activity {
                     if (cursor.moveToFirst()) {
                         do {
                             stream.write((ShopperOpenHelper.getItemShopOrder(cursor) + "\t"
+                                    + ShopperOpenHelper.getItemShopOrder(cursor) + "\t"
                                     + ShopperOpenHelper.getItemName(cursor) + "\n").getBytes());
                             cursor.moveToNext();
                         } while (!cursor.isAfterLast());
@@ -193,6 +194,37 @@ public class MainActivity extends Activity {
             }
         } catch (Exception exception) {
             throw new RuntimeException("Failed to export items.", exception);
+        }
+    }
+
+    public void mainListEntryIncreaseButtonOnClick(View view) {
+        this.shopperOpenHelper.increaseItemAmount(getItemId(view));
+        this.itemsCursor.requery();
+    }
+
+    private long getItemId(View view) {
+        int position = this.listView.getPositionForView(view);
+        return this.listView.getItemIdAtPosition(position);
+    }
+
+    public void mainListEntryDecreaseButtonOnClick(View view) {
+        this.shopperOpenHelper.decreaseItemAmount(getItemId(view));
+        this.itemsCursor.requery();
+    }
+
+    public void mainListEntryRaiseButtonOnClick(View view) {
+        int position = this.listView.getPositionForView(view);
+        if (position > 0) {
+            this.shopperOpenHelper.raiseItem(this.listView.getItemIdAtPosition(position));
+            this.itemsCursor.requery();
+        }
+    }
+
+    public void mainListEntryLowerButtonOnClick(View view) {
+        int position = this.listView.getPositionForView(view);
+        if (position < (this.listView.getCount() - 1)) {
+            this.shopperOpenHelper.lowerItem(getItemId(view));
+            this.itemsCursor.requery();
         }
     }
 

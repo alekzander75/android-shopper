@@ -2,12 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="40dp"
-	android:padding="10dp"
-    android:orientation="vertical" >
+    android:orientation="horizontal"
+    android:padding="2dp" >
+
+    <Button
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:contentDescription="@string/increase_amount"
+        android:onClick="mainListEntryIncreaseButtonOnClick"
+        android:text="@string/increase_item_amount__text" />
 
     <TextView
-        android:id="@+id/mainListEntryText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:id="@+id/mainListEntryAmountTextView"
+        android:layout_width="30dp"
+        android:layout_height="35dp"
+        android:gravity="right" />
+
+    <Button
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:contentDescription="@string/decrease_amount"
+        android:onClick="mainListEntryDecreaseButtonOnClick"
+        android:text="@string/decrease_item_amount__text" />
+
+    <Button
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:contentDescription="@string/raise_item"
+        android:onClick="mainListEntryRaiseButtonOnClick"
+        android:text="@string/raise_item_amount__text" />
+
+    <Button        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:contentDescription="@string/lower_item"
+        android:onClick="mainListEntryLowerButtonOnClick"
+        android:text="@string/lower_item_amount__text" />
+
+    <TextView
+        android:id="@+id/mainListEntryNameTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="35dp" />
 
 </LinearLayout>
