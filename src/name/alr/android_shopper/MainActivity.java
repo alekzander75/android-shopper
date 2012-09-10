@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
     private ShopperOpenHelper shopperOpenHelper;
 
     private ListView listView;
-    private BaseAdapter listAdapter;
+
     private Cursor itemsCursor;
 
     private AddItemDialogManager addItemDialogManager;
@@ -50,12 +50,12 @@ public class MainActivity extends Activity {
         this.itemsCursor = this.shopperOpenHelper.getListItems();
         startManagingCursor(this.itemsCursor);
 
-        this.listAdapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor, new String[] {
-                ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
-                R.id.mainListEntryNameTextView });
+        BaseAdapter listAdapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor,
+                new String[] { ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
+                        R.id.mainListEntryNameTextView });
 
         this.listView = (ListView) findViewById(R.id.mainListView);
-        this.listView.setAdapter(this.listAdapter);
+        this.listView.setAdapter(listAdapter);
         this.listView.setItemsCanFocus(false);
         this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         this.listView.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
