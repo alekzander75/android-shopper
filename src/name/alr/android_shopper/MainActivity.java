@@ -19,7 +19,6 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -38,6 +37,8 @@ public class MainActivity extends Activity {
 
     private AddItemDialogManager addItemDialogManager;
 
+    private boolean showingAll = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,15 +48,12 @@ public class MainActivity extends Activity {
         this.shopperOpenHelper = new ShopperOpenHelper(this);
         this.shopperOpenHelper.initialize();
 
-        this.itemsCursor = this.shopperOpenHelper.getListItems();
-        startManagingCursor(this.itemsCursor);
-
-        BaseAdapter listAdapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor,
-                new String[] { ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
-                        R.id.mainListEntryNameTextView });
+        setupItemsCursor();
 
         this.listView = (ListView) findViewById(R.id.mainListView);
-        this.listView.setAdapter(listAdapter);
+
+        setupMainListAdapter();
+
         this.listView.setItemsCanFocus(false);
         this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         this.listView.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
@@ -73,6 +71,16 @@ public class MainActivity extends Activity {
                 });
             }
         });
+    }
+
+    /**
+     * Uses current {@link #listView} and {@link #itemsCursor}.
+     */
+    private void setupMainListAdapter() {
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor,
+                new String[] { ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
+                        R.id.mainListEntryNameTextView });
+        this.listView.setAdapter(adapter);
     }
 
     @Override
@@ -93,6 +101,10 @@ public class MainActivity extends Activity {
         super.onOptionsItemSelected(item);
 
         switch (item.getItemId()) {
+        case (R.id.toggle_shown_menu_item): {
+            toggleShownItems();
+            return true;
+        }
         case (R.id.add_item_menu_item): {
             showDialog(ADD_ITEM_DIALOG_ID);
             return true;
@@ -221,6 +233,19 @@ public class MainActivity extends Activity {
             this.shopperOpenHelper.lowerItem(getItemId(view));
             this.itemsCursor.requery();
         }
+    }
+
+    private void toggleShownItems() {
+        stopManagingCursor(this.itemsCursor);
+        this.itemsCursor.close();
+        this.showingAll = !this.showingAll;
+        setupItemsCursor();
+        setupMainListAdapter();
+    }
+
+    private void setupItemsCursor() {
+        this.itemsCursor = this.shopperOpenHelper.getListItems(this.showingAll);
+        startManagingCursor(this.itemsCursor);
     }
 
 }

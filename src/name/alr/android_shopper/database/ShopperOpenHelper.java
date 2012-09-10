@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class ShopperOpenHelper extends SQLiteOpenHelper {
 
+    private static final String SHOW_ONLY_SELECTION_SQL = ShopItem.AMOUNT_TO_BUY + " > 0";
+
     private static final int DUMMY_SHOP_ORDER = 0;
 
     private static final String REORDER_ITEMS_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER + " = ("
@@ -68,9 +70,10 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
         return cursor.getString(cursor.getColumnIndexOrThrow(ShopItem.NAME));
     }
 
-    public Cursor getListItems() {
-        return this.database
-                .query(ShopItem.TABLE, GET_LIST_ITEMS__COLUMNS, null, null, null, null, ShopItem.SHOP_ORDER);
+    public Cursor getListItems(boolean showAll) {
+        String selection = showAll ? null : SHOW_ONLY_SELECTION_SQL;
+        return this.database.query(ShopItem.TABLE, GET_LIST_ITEMS__COLUMNS, selection, null, null, null,
+                ShopItem.SHOP_ORDER);
         // return this.database.query(ShopItem.TABLE, GET_LIST_ITEMS__COLUMNS, null, null, null, null, ShopItem.NAME
         // + " COLLATE NOCASE");
     }
@@ -103,20 +106,6 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     private Cursor getItem(long id) {
         Cursor cursor = this.database.query(ShopItem.TABLE, null, ShopItem.ID + " = ?",
                 new String[] { Long.toString(id) }, null, null, null);
-        if (cursor.moveToFirst()) {
-            return cursor;
-        } else {
-            cursor.close();
-            return null;
-        }
-    }
-
-    /**
-     * @return positioned {@link Cursor}, or <code>null</code>. remeber to {@link Cursor#close()} it.
-     */
-    private Cursor getItemByShopOrder(int itemShopOrder) {
-        Cursor cursor = this.database.query(ShopItem.TABLE, null, ShopItem.SHOP_ORDER + " = ?",
-                new String[] { Integer.toString(itemShopOrder) }, null, null, null);
         if (cursor.moveToFirst()) {
             return cursor;
         } else {
