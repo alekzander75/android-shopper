@@ -26,6 +26,12 @@
         android:onClick="mainListEntryDecreaseButtonOnClick"
         android:text="@string/decrease_item_amount__text" />
 
+    <TextView
+        android:id="@+id/mainListEntryNameTextView"
+        android:layout_width="0px"
+        android:layout_height="35dp"
+        android:layout_weight="1" />
+
     <Button
         android:layout_width="35dp"
         android:layout_height="35dp"
@@ -39,10 +45,5 @@
         android:contentDescription="@string/lower_item"
         android:onClick="mainListEntryLowerButtonOnClick"
         android:text="@string/lower_item_amount__text" />
-
-    <TextView
-        android:id="@+id/mainListEntryNameTextView"
-        android:layout_width="fill_parent"
-        android:layout_height="35dp" />
 
 </LinearLayout>
