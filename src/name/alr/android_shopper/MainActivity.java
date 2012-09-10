@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -57,7 +58,21 @@ public class MainActivity extends Activity {
         this.listView.setAdapter(this.listAdapter);
         this.listView.setItemsCanFocus(false);
         this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        registerForContextMenu(this.listView);
+        this.listView.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+                menu.setHeaderTitle("Selected Item");
+                MenuItem removeItemMenuItem = menu.add(0, R.id.remove_item_menu_item, Menu.NONE,
+                        R.string.remove_item__title);
+                removeItemMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item
+                                .getMenuInfo();
+                        removeItem(menuInfo.id);
+                        return true;
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -101,21 +116,6 @@ public class MainActivity extends Activity {
         }
 
         return false;
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-
-        menu.setHeaderTitle("Selected Item");
-        MenuItem removeItemMenuItem = menu.add(0, R.id.remove_item_menu_item, Menu.NONE, R.string.remove_item__title);
-        removeItemMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                removeItem(menuInfo.id);
-                return true;
-            }
-        });
     }
 
     @Override
