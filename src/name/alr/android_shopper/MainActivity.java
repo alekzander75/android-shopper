@@ -158,7 +158,7 @@ public class MainActivity extends Activity {
     protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
         switch (id) {
         case ADD_ITEM_DIALOG_ID:
-            this.addItemDialogManager.onPrepareDialog(args);
+            this.addItemDialogManager.onPrepareDialog();
             break;
         }
     }

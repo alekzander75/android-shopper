@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -82,7 +81,7 @@ public class AddItemDialogManager {
         return this.dialog;
     }
 
-    public void onPrepareDialog(Bundle args) {
+    public void onPrepareDialog() {
         if (this.okButton == null) {
             this.okButton = this.dialog.getButton(DialogInterface.BUTTON_POSITIVE);
         }
