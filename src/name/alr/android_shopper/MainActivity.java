@@ -122,13 +122,8 @@ public class MainActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        int position = this.listView.getSelectedItemPosition();
-
-        String removeTitle = getString(R.string.remove_item__title);
-
         MenuItem removeItem = menu.findItem(R.id.remove_item_menu_item);
-        removeItem.setTitle(removeTitle);
-        removeItem.setVisible(position > -1);
+        removeItem.setVisible(this.listView.getSelectedItemPosition() > -1);
 
         return true;
     }
