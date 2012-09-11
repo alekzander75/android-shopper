@@ -126,7 +126,7 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
         this.database.beginTransaction();
         try {
             this.database.delete(ShopItem.TABLE, DELETE_ITEM_SQL, new String[] { Long.toString(id) });
-            this.database.execSQL(REORDER_ITEMS_SQL, new String[] { Integer.toString(itemShopOrder) });
+            this.database.execSQL(REORDER_ITEMS_SQL, new Object[] { itemShopOrder });
             this.database.setTransactionSuccessful();
         } finally {
             this.database.endTransaction();

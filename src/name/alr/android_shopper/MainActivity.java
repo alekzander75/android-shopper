@@ -27,6 +27,8 @@ import android.widget.SimpleCursorAdapter;
  */
 public class MainActivity extends Activity {
 
+    // TODO: Pre build 2 cursors ( use deactivate)
+
     private static final int ADD_ITEM_DIALOG_ID = 1;
 
     private ShopperOpenHelper shopperOpenHelper;
@@ -38,6 +40,8 @@ public class MainActivity extends Activity {
     private AddItemDialogManager addItemDialogManager;
 
     private boolean showingAll = false;
+
+    private Intent preferencesIntent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +75,8 @@ public class MainActivity extends Activity {
                 });
             }
         });
+
+        this.preferencesIntent = new Intent(this, ShopperPreferenceActivity.class);
     }
 
     /**
@@ -122,7 +128,7 @@ public class MainActivity extends Activity {
             return true;
         }
         case (R.id.preferences_menu_item): {
-            startActivity(new Intent(this, ShopperPreferenceActivity.class));
+            startActivity(this.preferencesIntent);
             return true;
         }
         }
