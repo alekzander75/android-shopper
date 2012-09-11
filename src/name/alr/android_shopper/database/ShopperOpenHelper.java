@@ -103,7 +103,7 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     /**
      * @return positioned {@link Cursor}, or <code>null</code>. remeber to {@link Cursor#close()} it.
      */
-    private Cursor getItem(long id) {
+    public Cursor getItem(long id) {
         Cursor cursor = this.database.query(ShopItem.TABLE, null, ShopItem.ID + " = ?",
                 new String[] { Long.toString(id) }, null, null, null);
         if (cursor.moveToFirst()) {

@@ -19,6 +19,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -26,8 +27,6 @@ import android.widget.SimpleCursorAdapter;
  * @author alopezruiz@gmail.com (Alejandro Lopez Ruiz)
  */
 public class MainActivity extends Activity {
-
-    // TODO: Pre build 2 cursors ( use deactivate)
 
     private static final int ADD_ITEM_DIALOG_ID = 1;
 
@@ -42,6 +41,8 @@ public class MainActivity extends Activity {
     private boolean showingAll = false;
 
     private Intent preferencesIntent;
+
+    private final OnRemoveItemMenuItemClickListener onRemoveItemMenuItemClickListener = new OnRemoveItemMenuItemClickListener();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,31 +63,19 @@ public class MainActivity extends Activity {
         this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         this.listView.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-                menu.setHeaderTitle("Selected Item");
+                AdapterContextMenuInfo adapterContextMenuInfo = (AdapterContextMenuInfo) menuInfo;
+                Cursor item = getShopperOpenHelper().getItem(adapterContextMenuInfo.id);
+                String itemName = ShopperOpenHelper.getItemName(item);
+                item.close();
+
+                menu.setHeaderTitle("\"" + itemName + "\"");
                 MenuItem removeItemMenuItem = menu.add(0, R.id.remove_item_menu_item, Menu.NONE,
                         R.string.remove_item__title);
-                removeItemMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item
-                                .getMenuInfo();
-                        removeItem(menuInfo.id);
-                        return true;
-                    }
-                });
+                removeItemMenuItem.setOnMenuItemClickListener(getOnRemoveItemMenuItemClickListener());
             }
         });
 
         this.preferencesIntent = new Intent(this, ShopperPreferenceActivity.class);
-    }
-
-    /**
-     * Uses current {@link #listView} and {@link #itemsCursor}.
-     */
-    private void setupMainListAdapter() {
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor,
-                new String[] { ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
-                        R.id.mainListEntryNameTextView });
-        this.listView.setAdapter(adapter);
     }
 
     @Override
@@ -252,6 +241,32 @@ public class MainActivity extends Activity {
     private void setupItemsCursor() {
         this.itemsCursor = this.shopperOpenHelper.getListItems(this.showingAll);
         startManagingCursor(this.itemsCursor);
+    }
+
+    /**
+     * Uses current {@link #listView} and {@link #itemsCursor}.
+     */
+    private void setupMainListAdapter() {
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor,
+                new String[] { ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
+                R.id.mainListEntryNameTextView });
+        this.listView.setAdapter(adapter);
+    }
+    
+    private OnRemoveItemMenuItemClickListener getOnRemoveItemMenuItemClickListener() {
+        return this.onRemoveItemMenuItemClickListener;
+    }
+
+    private ShopperOpenHelper getShopperOpenHelper() {
+        return this.shopperOpenHelper;
+    }
+
+    private final class OnRemoveItemMenuItemClickListener implements OnMenuItemClickListener {
+        public boolean onMenuItemClick(MenuItem item) {
+            AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+            removeItem(menuInfo.id);
+            return true;
+        }
     }
 
 }
