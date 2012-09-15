@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -44,6 +45,8 @@ public class MainActivity extends Activity {
 
     private final OnRemoveItemMenuItemClickListener onRemoveItemMenuItemClickListener = new OnRemoveItemMenuItemClickListener();
 
+    private Vibrator vibrator;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +79,8 @@ public class MainActivity extends Activity {
         });
 
         this.preferencesIntent = new Intent(this, ShopperPreferenceActivity.class);
+
+        this.vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
     }
 
     @Override
@@ -210,13 +215,23 @@ public class MainActivity extends Activity {
     }
 
     public void mainListEntryDecreaseButtonOnClick(View view) {
-        this.shopperOpenHelper.decreaseItemAmount(getItemId(view));
-        this.itemsCursor.requery();
+        int position = this.listView.getPositionForView(view);
+        Cursor item = (Cursor) this.listView.getItemAtPosition(position);
+        int itemAmount = ShopperOpenHelper.getItemAmount(item);
+
+        if (itemAmount > 0) {
+            if (itemAmount == 1) {
+                vibrateShort();
+            }
+            this.shopperOpenHelper.decreaseItemAmount(item.getLong(0));
+            this.itemsCursor.requery();
+        }
     }
 
     public void mainListEntryRaiseButtonOnClick(View view) {
         int position = this.listView.getPositionForView(view);
         if (position > 0) {
+            vibrateShort();
             this.shopperOpenHelper.raiseItem(this.listView.getItemIdAtPosition(position));
             this.itemsCursor.requery();
         }
@@ -225,9 +240,14 @@ public class MainActivity extends Activity {
     public void mainListEntryLowerButtonOnClick(View view) {
         int position = this.listView.getPositionForView(view);
         if (position < (this.listView.getCount() - 1)) {
-            this.shopperOpenHelper.lowerItem(getItemId(view));
+            vibrateShort();
+            this.shopperOpenHelper.lowerItem(this.listView.getItemIdAtPosition(position));
             this.itemsCursor.requery();
         }
+    }
+
+    private void vibrateShort() {
+        this.vibrator.vibrate(100);
     }
 
     private void toggleShownItems() {
@@ -249,10 +269,10 @@ public class MainActivity extends Activity {
     private void setupMainListAdapter() {
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor,
                 new String[] { ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
-                R.id.mainListEntryNameTextView });
+                        R.id.mainListEntryNameTextView });
         this.listView.setAdapter(adapter);
     }
-    
+
     private OnRemoveItemMenuItemClickListener getOnRemoveItemMenuItemClickListener() {
         return this.onRemoveItemMenuItemClickListener;
     }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="40dp"
+    android:layout_height="50dp"
     android:longClickable="true"
     android:orientation="horizontal"
     android:padding="2dp" >
 
     <Button
         android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_height="45dp"
         android:contentDescription="@string/increase_amount"
         android:onClick="mainListEntryIncreaseButtonOnClick"
         android:text="@string/increase_item_amount__text" />
@@ -17,11 +17,12 @@
         android:id="@+id/mainListEntryAmountTextView"
         android:layout_width="30dp"
         android:layout_height="35dp"
-        android:gravity="right" />
+        android:gravity="right"
+        android:textSize="18dp" />
 
     <Button
         android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_height="45dp"
         android:contentDescription="@string/decrease_amount"
         android:onClick="mainListEntryDecreaseButtonOnClick"
         android:text="@string/decrease_item_amount__text" />
@@ -29,19 +30,20 @@
     <TextView
         android:id="@+id/mainListEntryNameTextView"
         android:layout_width="0px"
-        android:layout_height="35dp"
-        android:layout_weight="1" />
+        android:layout_height="45dp"
+        android:layout_weight="1"
+        android:textSize="18dp" />
 
     <Button
         android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_height="45dp"
         android:contentDescription="@string/raise_item"
         android:onClick="mainListEntryRaiseButtonOnClick"
         android:text="@string/raise_item_amount__text" />
 
     <Button
         android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_height="45dp"
         android:contentDescription="@string/lower_item"
         android:onClick="mainListEntryLowerButtonOnClick"
         android:text="@string/lower_item_amount__text" />
