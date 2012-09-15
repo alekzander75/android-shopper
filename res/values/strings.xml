@@ -1,13 +1,13 @@
 <resources>
 
     <string name="app_name">Android Shopper</string>
-    <string name="add_item__title">Add Item</string>
+    <string name="add_item__title">Add</string>
     <string name="cancel">Cancel</string>
-    <string name="export_items__label">Export Items</string>
+    <string name="export_items__label">Export All</string>
     <string name="main_activity__label">Shopper</string>
     <string name="preferences__label">Preferences</string>
-    <string name="remove_item__title">Remove Item</string>
-    <string name="remove_all_items__title">Remove All Items</string>
+    <string name="remove_item__title">Remove</string>
+    <string name="remove_all_items__title">Remove All</string>
     <string name="increase_amount">Increase amount</string>
     <string name="decrease_amount">Decrease amount</string>
     <string name="increase_item_amount__text">+</string>
