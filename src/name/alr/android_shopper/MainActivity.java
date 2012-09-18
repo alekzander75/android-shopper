@@ -22,7 +22,6 @@ import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 /**
  * @author alopezruiz@gmail.com (Alejandro Lopez Ruiz)
@@ -205,7 +204,7 @@ public class MainActivity extends Activity {
     }
 
     public void mainListEntryAlterButtonOnClick(View view) {
-        if (this.showingAll) {
+        if (this.isShowingAll()) {
             mainListEntryIncreaseButtonOnClick(view);
         } else {
             mainListEntryDecreaseButtonOnClick(view);
@@ -261,13 +260,13 @@ public class MainActivity extends Activity {
     private void toggleShownItems() {
         stopManagingCursor(this.itemsCursor);
         this.itemsCursor.close();
-        this.showingAll = !this.showingAll;
+        this.setShowingAll(!this.isShowingAll());
         setupItemsCursor();
         setupMainListAdapter();
     }
 
     private void setupItemsCursor() {
-        this.itemsCursor = this.shopperOpenHelper.getListItems(this.showingAll);
+        this.itemsCursor = this.shopperOpenHelper.getListItems(this.isShowingAll());
         startManagingCursor(this.itemsCursor);
     }
 
@@ -275,9 +274,9 @@ public class MainActivity extends Activity {
      * Uses current {@link #listView} and {@link #itemsCursor}.
      */
     private void setupMainListAdapter() {
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.main_list_entry, this.itemsCursor,
-                new String[] { ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
-                        R.id.mainListEntryNameTextView });
+        MainListAdapter adapter = new MainListAdapter(this, R.layout.main_list_entry, this.itemsCursor, new String[] {
+                ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
+                R.id.mainListEntryNameTextView }, this);
         this.listView.setAdapter(adapter);
     }
 
@@ -287,6 +286,14 @@ public class MainActivity extends Activity {
 
     private ShopperOpenHelper getShopperOpenHelper() {
         return this.shopperOpenHelper;
+    }
+
+    boolean isShowingAll() {
+        return this.showingAll;
+    }
+
+    private void setShowingAll(boolean showingAll) {
+        this.showingAll = showingAll;
     }
 
     private final class OnRemoveItemMenuItemClickListener implements OnMenuItemClickListener {

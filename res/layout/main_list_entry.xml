@@ -6,12 +6,12 @@
     android:orientation="horizontal"
     android:padding="1dp" >
 
-    <Button
+    <ImageButton
+        android:id="@+id/mainListEntryAlterAmountButton"
         android:layout_width="40dp"
         android:layout_height="fill_parent"
         android:contentDescription="@string/alter_amount"
-        android:onClick="mainListEntryAlterButtonOnClick"
-        android:text="@string/alter_item_amount__text" />
+        android:onClick="mainListEntryAlterButtonOnClick" />
 
     <TextView
         android:id="@+id/mainListEntryAmountTextView"
