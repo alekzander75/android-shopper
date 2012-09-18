@@ -28,20 +28,20 @@
         android:gravity="center_vertical"
         android:textSize="@dimen/mainListEntryTextSize" />
 
-    <Button
+    <ImageButton
         android:id="@+id/mainListEntryRaiseButton"
         android:layout_width="@dimen/mainListEntryItemMoveWidth"
         android:layout_height="fill_parent"
         android:contentDescription="@string/raise_item"
         android:onClick="mainListEntryRaiseButtonOnClick"
-        android:text="@string/raise_item_amount__text" />
+        android:src="@android:drawable/arrow_up_float" />
 
-    <Button
+    <ImageButton
         android:id="@+id/mainListEntryLowerButton"
         android:layout_width="@dimen/mainListEntryItemMoveWidth"
         android:layout_height="fill_parent"
         android:contentDescription="@string/lower_item"
         android:onClick="mainListEntryLowerButtonOnClick"
-        android:text="@string/lower_item_amount__text" />
+        android:src="@android:drawable/arrow_down_float" />
 
 </LinearLayout>
