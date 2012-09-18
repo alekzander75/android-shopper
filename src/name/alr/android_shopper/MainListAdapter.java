@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 /**
@@ -23,9 +25,24 @@ public class MainListAdapter extends SimpleCursorAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
 
-        ImageButton button = (ImageButton) view.findViewById(R.id.mainListEntryAlterAmountButton);
-        button.setImageResource(this.mainActivity.isShowingAll() ? android.R.drawable.ic_input_add
+        ImageButton imageButton = (ImageButton) view.findViewById(R.id.mainListEntryAlterAmountButton);
+        imageButton.setImageResource(this.mainActivity.isShowingAll() ? android.R.drawable.ic_input_add
                 : android.R.drawable.ic_delete);
+
+        Button raiseButton = (Button) view.findViewById(R.id.mainListEntryRaiseButton);
+        Button lowerButton = (Button) view.findViewById(R.id.mainListEntryLowerButton);
+        if (position == 0) {
+            raiseButton.setVisibility(View.INVISIBLE);
+            lowerButton.setVisibility(View.VISIBLE);
+        } else {
+            raiseButton.setVisibility(View.VISIBLE);
+            ListView listView = (ListView) parent;
+            if (position == (listView.getCount() - 1)) {
+                lowerButton.setVisibility(View.INVISIBLE);
+            } else {
+                lowerButton.setVisibility(View.VISIBLE);
+            }
+        }
 
         return view;
     }
