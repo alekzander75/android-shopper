@@ -204,7 +204,15 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void mainListEntryIncreaseButtonOnClick(View view) {
+    public void mainListEntryAlterButtonOnClick(View view) {
+        if (this.showingAll) {
+            mainListEntryIncreaseButtonOnClick(view);
+        } else {
+            mainListEntryDecreaseButtonOnClick(view);
+        }
+    }
+
+    private void mainListEntryIncreaseButtonOnClick(View view) {
         this.shopperOpenHelper.increaseItemAmount(getItemId(view));
         this.itemsCursor.requery();
     }
@@ -214,7 +222,7 @@ public class MainActivity extends Activity {
         return this.listView.getItemIdAtPosition(position);
     }
 
-    public void mainListEntryDecreaseButtonOnClick(View view) {
+    private void mainListEntryDecreaseButtonOnClick(View view) {
         int position = this.listView.getPositionForView(view);
         Cursor item = (Cursor) this.listView.getItemAtPosition(position);
         int itemAmount = ShopperOpenHelper.getItemAmount(item);

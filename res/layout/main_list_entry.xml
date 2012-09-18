@@ -4,46 +4,40 @@
     android:layout_height="50dp"
     android:longClickable="true"
     android:orientation="horizontal"
-    android:padding="2dp" >
+    android:padding="1dp" >
 
     <Button
-        android:layout_width="35dp"
-        android:layout_height="45dp"
-        android:contentDescription="@string/increase_amount"
-        android:onClick="mainListEntryIncreaseButtonOnClick"
-        android:text="@string/increase_item_amount__text" />
+        android:layout_width="40dp"
+        android:layout_height="fill_parent"
+        android:contentDescription="@string/alter_amount"
+        android:onClick="mainListEntryAlterButtonOnClick"
+        android:text="@string/alter_item_amount__text" />
 
     <TextView
         android:id="@+id/mainListEntryAmountTextView"
         android:layout_width="30dp"
-        android:layout_height="35dp"
-        android:gravity="right"
-        android:textSize="18dp" />
-
-    <Button
-        android:layout_width="35dp"
-        android:layout_height="45dp"
-        android:contentDescription="@string/decrease_amount"
-        android:onClick="mainListEntryDecreaseButtonOnClick"
-        android:text="@string/decrease_item_amount__text" />
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:textSize="@dimen/mainListEntryTextSize" />
 
     <TextView
         android:id="@+id/mainListEntryNameTextView"
         android:layout_width="0px"
-        android:layout_height="45dp"
+        android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:textSize="18dp" />
+        android:gravity="center_vertical"
+        android:textSize="@dimen/mainListEntryTextSize" />
 
     <Button
-        android:layout_width="35dp"
-        android:layout_height="45dp"
+        android:layout_width="@dimen/mainListEntryItemMoveWidth"
+        android:layout_height="fill_parent"
         android:contentDescription="@string/raise_item"
         android:onClick="mainListEntryRaiseButtonOnClick"
         android:text="@string/raise_item_amount__text" />
 
     <Button
-        android:layout_width="35dp"
-        android:layout_height="45dp"
+        android:layout_width="@dimen/mainListEntryItemMoveWidth"
+        android:layout_height="fill_parent"
         android:contentDescription="@string/lower_item"
         android:onClick="mainListEntryLowerButtonOnClick"
         android:text="@string/lower_item_amount__text" />

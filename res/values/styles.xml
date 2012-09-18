@@ -2,4 +2,7 @@
 
     <style name="AppTheme" parent="android:Theme.Light" />
 
+    <dimen name="mainListEntryTextSize">24dp</dimen>
+    <dimen name="mainListEntryItemMoveWidth">37dp</dimen>
+
 </resources>
