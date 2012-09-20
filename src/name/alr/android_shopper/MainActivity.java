@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
 
     private AddItemDialogManager addItemDialogManager;
 
-    private boolean showingAll = false;
+    private boolean showingAll = true;
 
     private Intent preferencesIntent;
 
