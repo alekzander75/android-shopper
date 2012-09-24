@@ -212,6 +212,7 @@ public class MainActivity extends Activity {
     }
 
     private void mainListEntryIncreaseButtonOnClick(View view) {
+        vibrateShort();
         this.shopperOpenHelper.increaseItemAmount(getItemId(view));
         this.itemsCursor.requery();
     }

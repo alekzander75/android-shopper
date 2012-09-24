@@ -28,20 +28,31 @@ public class MainListAdapter extends SimpleCursorAdapter {
         amountButton.setImageResource(this.mainActivity.isShowingAll() ? android.R.drawable.ic_input_add
                 : android.R.drawable.ic_delete);
 
-        ImageButton raiseButton = (ImageButton) view.findViewById(R.id.mainListEntryRaiseButton);
-        ImageButton lowerButton = (ImageButton) view.findViewById(R.id.mainListEntryLowerButton);
-        if (position == 0) {
-            raiseButton.setVisibility(View.INVISIBLE);
-            lowerButton.setVisibility(View.VISIBLE);
+        int raiseButtonVisibility;
+        int lowerButtonVisibility;
+
+        if (!this.mainActivity.isShowingAll()) {
+            raiseButtonVisibility = View.GONE;
+            lowerButtonVisibility = View.GONE;
         } else {
-            raiseButton.setVisibility(View.VISIBLE);
-            ListView listView = (ListView) parent;
-            if (position == (listView.getCount() - 1)) {
-                lowerButton.setVisibility(View.INVISIBLE);
+            if (position == 0) {
+                raiseButtonVisibility = View.GONE;
+                lowerButtonVisibility = View.VISIBLE;
             } else {
-                lowerButton.setVisibility(View.VISIBLE);
+                raiseButtonVisibility = View.VISIBLE;
+                ListView listView = (ListView) parent;
+                if (position == (listView.getCount() - 1)) {
+                    lowerButtonVisibility = View.GONE;
+                } else {
+                    lowerButtonVisibility = View.VISIBLE;
+                }
             }
         }
+
+        ImageButton raiseButton = (ImageButton) view.findViewById(R.id.mainListEntryRaiseButton);
+        raiseButton.setVisibility(raiseButtonVisibility);
+        ImageButton lowerButton = (ImageButton) view.findViewById(R.id.mainListEntryLowerButton);
+        lowerButton.setVisibility(lowerButtonVisibility);
 
         return view;
     }

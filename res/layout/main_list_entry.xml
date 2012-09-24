@@ -7,11 +7,20 @@
     android:padding="1dp" >
 
     <ImageButton
-        android:id="@+id/mainListEntryAlterAmountButton"
-        android:layout_width="40dp"
+        android:id="@+id/mainListEntryRaiseButton"
+        android:layout_width="@dimen/mainListEntryItemMoveWidth"
         android:layout_height="fill_parent"
-        android:contentDescription="@string/alter_amount"
-        android:onClick="mainListEntryAlterButtonOnClick" />
+        android:contentDescription="@string/raise_item"
+        android:onClick="mainListEntryRaiseButtonOnClick"
+        android:src="@android:drawable/arrow_up_float" />
+
+    <ImageButton
+        android:id="@+id/mainListEntryLowerButton"
+        android:layout_width="@dimen/mainListEntryItemMoveWidth"
+        android:layout_height="fill_parent"
+        android:contentDescription="@string/lower_item"
+        android:onClick="mainListEntryLowerButtonOnClick"
+        android:src="@android:drawable/arrow_down_float" />
 
     <TextView
         android:id="@+id/mainListEntryAmountTextView"
@@ -29,19 +38,10 @@
         android:textSize="@dimen/mainListEntryTextSize" />
 
     <ImageButton
-        android:id="@+id/mainListEntryRaiseButton"
-        android:layout_width="@dimen/mainListEntryItemMoveWidth"
+        android:id="@+id/mainListEntryAlterAmountButton"
+        android:layout_width="40dp"
         android:layout_height="fill_parent"
-        android:contentDescription="@string/raise_item"
-        android:onClick="mainListEntryRaiseButtonOnClick"
-        android:src="@android:drawable/arrow_up_float" />
-
-    <ImageButton
-        android:id="@+id/mainListEntryLowerButton"
-        android:layout_width="@dimen/mainListEntryItemMoveWidth"
-        android:layout_height="fill_parent"
-        android:contentDescription="@string/lower_item"
-        android:onClick="mainListEntryLowerButtonOnClick"
-        android:src="@android:drawable/arrow_down_float" />
+        android:contentDescription="@string/alter_amount"
+        android:onClick="mainListEntryAlterButtonOnClick" />
 
 </LinearLayout>
