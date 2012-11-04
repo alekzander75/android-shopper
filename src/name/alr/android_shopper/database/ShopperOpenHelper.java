@@ -15,8 +15,9 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
 
     private static final int DUMMY_SHOP_ORDER = 0;
 
-    private static final String REORDER_ITEMS_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER + " = ("
-            + ShopItem.SHOP_ORDER + " - 1) where " + ShopItem.SHOP_ORDER + " > ?";
+    // private static final String REORDER_ITEMS_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER +
+    // " = ("
+    // + ShopItem.SHOP_ORDER + " - 1) where " + ShopItem.SHOP_ORDER + " > ?";
 
     private static final String INCREASE_ITEM_AMOUNT_SQL = "update " + ShopItem.TABLE + " set "
             + ShopItem.AMOUNT_TO_BUY + " = (" + ShopItem.AMOUNT_TO_BUY + " + 1) where " + ShopItem.ID + " = ?";
@@ -120,13 +121,28 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
 
     public void deleteItem(long id) {
         Cursor itemCursor = getItem(id);
-        int itemShopOrder = getItemShopOrder(itemCursor);
+        // int itemShopOrder = getItemShopOrder(itemCursor);
         itemCursor.close();
 
         this.database.beginTransaction();
         try {
             this.database.delete(ShopItem.TABLE, DELETE_ITEM_SQL, new String[] { Long.toString(id) });
-            this.database.execSQL(REORDER_ITEMS_SQL, new Object[] { itemShopOrder });
+
+            Cursor cursor = getItems();
+            if (cursor.moveToFirst()) {
+                do {
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(ShopItem.SHOP_ORDER, getItemShopOrder(cursor) - 1);
+                    this.database.update(ShopItem.TABLE, contentValues, ShopItem.ID + " = ?",
+                            new String[] { Long.toString(cursor.getLong(0)) });
+
+                    cursor.moveToNext();
+                } while (!cursor.isAfterLast());
+            }
+            cursor.close();
+
+            // this.database.execSQL(REORDER_ITEMS_SQL, new Object[] { itemShopOrder });
+
             this.database.setTransactionSuccessful();
         } finally {
             this.database.endTransaction();
