@@ -13,7 +13,7 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
 
     private static final String SHOW_ONLY_SELECTION_SQL = ShopItem.AMOUNT_TO_BUY + " > 0";
 
-    private static final int DUMMY_SHOP_ORDER = 0;
+    private static final int DUMMY_SHOP_ORDER = -1;
 
     // private static final String REORDER_ITEMS_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER +
     // " = ("
