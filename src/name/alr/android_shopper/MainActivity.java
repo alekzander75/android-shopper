@@ -1,13 +1,9 @@
 package name.alr.android_shopper;
 
-import java.io.FileOutputStream;
-
 import name.alr.android_shopper.database.ShopItem;
 import name.alr.android_shopper.database.ShopperOpenHelper;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -116,8 +112,8 @@ public class MainActivity extends Activity {
             removeAllItems();
             return true;
         }
-        case (R.id.export_items_menu_item): {
-            exportItems();
+        case (R.id.do_debug_action_menu_item): {
+            doDebugAction();
             return true;
         }
         case (R.id.preferences_menu_item): {
@@ -177,30 +173,66 @@ public class MainActivity extends Activity {
         this.itemsCursor.requery();
     }
 
-    @SuppressLint("WorldReadableFiles")
-    private void exportItems() {
+    private void doDebugAction() {
+        // CHECK DATA
+        Cursor cursor = this.shopperOpenHelper.getItems();
         try {
-            FileOutputStream stream = openFileOutput("shopper-items.tsv", Context.MODE_WORLD_READABLE);
-            try {
-                Cursor cursor = this.shopperOpenHelper.getItems();
-                try {
-                    if (cursor.moveToFirst()) {
-                        do {
-                            stream.write((ShopperOpenHelper.getItemShopOrder(cursor) + "\t"
-                                    + ShopperOpenHelper.getItemShopOrder(cursor) + "\t"
-                                    + ShopperOpenHelper.getItemName(cursor) + "\n").getBytes());
-                            cursor.moveToNext();
-                        } while (!cursor.isAfterLast());
-                    }
-                } finally {
-                    cursor.close();
-                }
-            } finally {
-                stream.close();
+            if (cursor.moveToFirst()) {
+                do {
+                    long id = cursor.getLong(0);
+                    int itemShopOrder = ShopperOpenHelper.getItemShopOrder(cursor);
+                    String itemName = ShopperOpenHelper.getItemName(cursor);
+
+                    System.out.println(id + " " + itemShopOrder + " " + itemName);
+
+                    cursor.moveToNext();
+                } while (!cursor.isAfterLast());
             }
-        } catch (Exception exception) {
-            throw new RuntimeException("Failed to export items.", exception);
+        } finally {
+            cursor.close();
         }
+
+        // EXPORT DATA
+        // try {
+        // FileOutputStream stream = openFileOutput("shopper-items.tsv", Context.MODE_WORLD_READABLE);
+        // try {
+        // Cursor cursor = this.shopperOpenHelper.getItems();
+        // try {
+        // if (cursor.moveToFirst()) {
+        // do {
+        // String line = ShopperOpenHelper.getItemShopOrder(cursor) + "\t"
+        // + ShopperOpenHelper.getItemShopOrder(cursor) + "\t"
+        // + ShopperOpenHelper.getItemName(cursor) + "\n";
+        // stream.write(line.getBytes());
+        // cursor.moveToNext();
+        // } while (!cursor.isAfterLast());
+        // }
+        // } finally {
+        // cursor.close();
+        // }
+        // } finally {
+        // stream.close();
+        // }
+        // } catch (Exception exception) {
+        // throw new RuntimeException("Failed to export items.", exception);
+        // }
+
+        // FIX ITEM ORDER
+        // Cursor cursor = this.shopperOpenHelper.getItems();
+        // try {
+        // if (cursor.moveToFirst()) {
+        // int i = 1;
+        // do {
+        // long id = cursor.getLong(0);
+        // this.shopperOpenHelper.fixShopOrder(id, ShopperOpenHelper.BIG_DUMMY_SHOP_ORDER + i);
+        // cursor.moveToNext();
+        // i++;
+        // } while (!cursor.isAfterLast());
+        // }
+        // } finally {
+        // cursor.close();
+        // }
+        // this.shopperOpenHelper.fixShopOrders();
     }
 
     public void mainListEntryAlterButtonOnClick(View view) {

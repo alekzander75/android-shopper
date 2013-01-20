@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class ShopperOpenHelper extends SQLiteOpenHelper {
 
+    public static final int BIG_DUMMY_SHOP_ORDER = 1000;
+
     private static final String SHOW_ONLY_SELECTION_SQL = ShopItem.AMOUNT_TO_BUY + " > 0";
 
     private static final int DUMMY_SHOP_ORDER = -1;
@@ -32,6 +34,12 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
 
     private static final String[] GET_LIST_ITEMS__COLUMNS = new String[] { ShopItem.ID + " as _id", ShopItem.NAME,
             ShopItem.AMOUNT_TO_BUY };
+
+    private static final String FIX_SHOP_ORDER_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER
+            + " = ? where " + ShopItem.ID + " = ?";
+
+    private static final String FIX_SHOP_ORDERS_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER
+            + " = (" + ShopItem.SHOP_ORDER + " - " + BIG_DUMMY_SHOP_ORDER + ")";
 
     private SQLiteDatabase database;
 
@@ -192,6 +200,14 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
         int otherItemShopOrder = itemShopOrder + 1;
 
         swapShopPositions(id, itemShopOrder, otherItemShopOrder);
+    }
+
+    public void fixShopOrder(long id, int shopOrder) {
+        this.database.execSQL(FIX_SHOP_ORDER_SQL, new Object[] { shopOrder, id });
+    }
+
+    public void fixShopOrders() {
+        this.database.execSQL(FIX_SHOP_ORDERS_SQL);
     }
 
 }

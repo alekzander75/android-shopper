@@ -3,7 +3,7 @@
     <string name="app_name">Android Shopper</string>
     <string name="add_item__title">Add</string>
     <string name="cancel">Cancel</string>
-    <string name="export_items__label">Export All</string>
+    <string name="do_debug_action__label">Do Magic</string>
     <string name="main_activity__label">Shopper</string>
     <string name="preferences__label">Preferences</string>
     <string name="remove_item__title">Remove</string>

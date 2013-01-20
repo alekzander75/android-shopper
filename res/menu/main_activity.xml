@@ -29,12 +29,12 @@
         android:orderInCategory="400"
         android:title="@string/remove_all_items__title"/>
     <item
-        android:id="@+id/export_items_menu_item"
+        android:id="@+id/do_debug_action_menu_item"
         android:alphabeticShortcut="e"
         android:icon="@android:drawable/ic_menu_save"
         android:numericShortcut="5"
         android:orderInCategory="500"
-        android:title="@string/export_items__label"/>
+        android:title="@string/do_debug_action__label"/>
     <item
         android:id="@+id/preferences_menu_item"
         android:alphabeticShortcut="p"
