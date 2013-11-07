@@ -24,7 +24,13 @@ import android.widget.ListView;
  */
 public class MainActivity extends Activity {
 
+    private static final String SHOWING_ALL_BUNDLE_KEY = "showingAll";
+
     private static final int ADD_ITEM_DIALOG_ID = 1;
+
+    private static final boolean SHOWING_ALL_DEFAULT_VALUE = true;
+
+    private final OnRemoveItemMenuItemClickListener onRemoveItemMenuItemClickListener = new OnRemoveItemMenuItemClickListener();
 
     private ShopperOpenHelper shopperOpenHelper;
 
@@ -34,11 +40,9 @@ public class MainActivity extends Activity {
 
     private AddItemDialogManager addItemDialogManager;
 
-    private boolean showingAll = true;
+    private boolean showingAll = SHOWING_ALL_DEFAULT_VALUE;
 
     private Intent preferencesIntent;
-
-    private final OnRemoveItemMenuItemClickListener onRemoveItemMenuItemClickListener = new OnRemoveItemMenuItemClickListener();
 
     private Vibrator vibrator;
 
@@ -175,22 +179,22 @@ public class MainActivity extends Activity {
 
     private void doDebugAction() {
         // CHECK DATA
-//        Cursor cursor = this.shopperOpenHelper.getItems();
-//        try {
-//            if (cursor.moveToFirst()) {
-//                do {
-//                    long id = cursor.getLong(0);
-//                    int itemShopOrder = ShopperOpenHelper.getItemShopOrder(cursor);
-//                    String itemName = ShopperOpenHelper.getItemName(cursor);
-//
-//                    System.out.println(id + " " + itemShopOrder + " " + itemName);
-//
-//                    cursor.moveToNext();
-//                } while (!cursor.isAfterLast());
-//            }
-//        } finally {
-//            cursor.close();
-//        }
+        // Cursor cursor = this.shopperOpenHelper.getItems();
+        // try {
+        // if (cursor.moveToFirst()) {
+        // do {
+        // long id = cursor.getLong(0);
+        // int itemShopOrder = ShopperOpenHelper.getItemShopOrder(cursor);
+        // String itemName = ShopperOpenHelper.getItemName(cursor);
+        //
+        // System.out.println(id + " " + itemShopOrder + " " + itemName);
+        //
+        // cursor.moveToNext();
+        // } while (!cursor.isAfterLast());
+        // }
+        // } finally {
+        // cursor.close();
+        // }
 
         // EXPORT DATA
         // try {
@@ -218,21 +222,21 @@ public class MainActivity extends Activity {
         // }
 
         // FIX ITEM ORDER
-        Cursor cursor = this.shopperOpenHelper.getItems();
-        try {
-            if (cursor.moveToFirst()) {
-                int i = 1;
-                do {
-                    long id = cursor.getLong(0);
-                    this.shopperOpenHelper.fixShopOrder(id, ShopperOpenHelper.BIG_DUMMY_SHOP_ORDER + i);
-                    cursor.moveToNext();
-                    i++;
-                } while (!cursor.isAfterLast());
-            }
-        } finally {
-            cursor.close();
-        }
-        this.shopperOpenHelper.fixShopOrders();
+        // Cursor cursor = this.shopperOpenHelper.getItems();
+        // try {
+        // if (cursor.moveToFirst()) {
+        // int i = 1;
+        // do {
+        // long id = cursor.getLong(0);
+        // this.shopperOpenHelper.fixShopOrder(id, ShopperOpenHelper.BIG_DUMMY_SHOP_ORDER + i);
+        // cursor.moveToNext();
+        // i++;
+        // } while (!cursor.isAfterLast());
+        // }
+        // } finally {
+        // cursor.close();
+        // }
+        // this.shopperOpenHelper.fixShopOrders();
     }
 
     public void mainListEntryAlterButtonOnClick(View view) {
@@ -291,11 +295,9 @@ public class MainActivity extends Activity {
     }
 
     private void toggleShownItems() {
-        stopManagingCursor(this.itemsCursor);
-        this.itemsCursor.close();
-        this.setShowingAll(!this.isShowingAll());
-        setupItemsCursor();
-        setupMainListAdapter();
+        disardCursor();
+        this.showingAll = !this.isShowingAll();
+        setupNewCursorAndRefreshList();
     }
 
     private void setupItemsCursor() {
@@ -325,16 +327,39 @@ public class MainActivity extends Activity {
         return this.showingAll;
     }
 
-    private void setShowingAll(boolean showingAll) {
-        this.showingAll = showingAll;
-    }
-
     private final class OnRemoveItemMenuItemClickListener implements OnMenuItemClickListener {
         public boolean onMenuItemClick(MenuItem item) {
             AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
             removeItem(menuInfo.id);
             return true;
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SHOWING_ALL_BUNDLE_KEY, showingAll);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
+        }
+        this.showingAll = savedInstanceState.getBoolean(SHOWING_ALL_BUNDLE_KEY, SHOWING_ALL_DEFAULT_VALUE);
+        disardCursor();
+        setupNewCursorAndRefreshList();
+    }
+
+    private void setupNewCursorAndRefreshList() {
+        setupItemsCursor();
+        setupMainListAdapter();
+    }
+
+    private void disardCursor() {
+        stopManagingCursor(this.itemsCursor);
+        this.itemsCursor.close();
     }
 
 }
