@@ -175,22 +175,22 @@ public class MainActivity extends Activity {
 
     private void doDebugAction() {
         // CHECK DATA
-        Cursor cursor = this.shopperOpenHelper.getItems();
-        try {
-            if (cursor.moveToFirst()) {
-                do {
-                    long id = cursor.getLong(0);
-                    int itemShopOrder = ShopperOpenHelper.getItemShopOrder(cursor);
-                    String itemName = ShopperOpenHelper.getItemName(cursor);
-
-                    System.out.println(id + " " + itemShopOrder + " " + itemName);
-
-                    cursor.moveToNext();
-                } while (!cursor.isAfterLast());
-            }
-        } finally {
-            cursor.close();
-        }
+//        Cursor cursor = this.shopperOpenHelper.getItems();
+//        try {
+//            if (cursor.moveToFirst()) {
+//                do {
+//                    long id = cursor.getLong(0);
+//                    int itemShopOrder = ShopperOpenHelper.getItemShopOrder(cursor);
+//                    String itemName = ShopperOpenHelper.getItemName(cursor);
+//
+//                    System.out.println(id + " " + itemShopOrder + " " + itemName);
+//
+//                    cursor.moveToNext();
+//                } while (!cursor.isAfterLast());
+//            }
+//        } finally {
+//            cursor.close();
+//        }
 
         // EXPORT DATA
         // try {
@@ -218,21 +218,21 @@ public class MainActivity extends Activity {
         // }
 
         // FIX ITEM ORDER
-        // Cursor cursor = this.shopperOpenHelper.getItems();
-        // try {
-        // if (cursor.moveToFirst()) {
-        // int i = 1;
-        // do {
-        // long id = cursor.getLong(0);
-        // this.shopperOpenHelper.fixShopOrder(id, ShopperOpenHelper.BIG_DUMMY_SHOP_ORDER + i);
-        // cursor.moveToNext();
-        // i++;
-        // } while (!cursor.isAfterLast());
-        // }
-        // } finally {
-        // cursor.close();
-        // }
-        // this.shopperOpenHelper.fixShopOrders();
+        Cursor cursor = this.shopperOpenHelper.getItems();
+        try {
+            if (cursor.moveToFirst()) {
+                int i = 1;
+                do {
+                    long id = cursor.getLong(0);
+                    this.shopperOpenHelper.fixShopOrder(id, ShopperOpenHelper.BIG_DUMMY_SHOP_ORDER + i);
+                    cursor.moveToNext();
+                    i++;
+                } while (!cursor.isAfterLast());
+            }
+        } finally {
+            cursor.close();
+        }
+        this.shopperOpenHelper.fixShopOrders();
     }
 
     public void mainListEntryAlterButtonOnClick(View view) {

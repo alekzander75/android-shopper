@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class ShopperOpenHelper extends SQLiteOpenHelper {
 
+    private static final String ITEMS_TO_REORDER_SELECTION_SQL = ShopItem.SHOP_ORDER + " > ?";
+
     public static final int BIG_DUMMY_SHOP_ORDER = 1000;
 
     private static final String SHOW_ONLY_SELECTION_SQL = ShopItem.AMOUNT_TO_BUY + " > 0";
@@ -31,6 +33,8 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
 
     private static final String MAX_ITEMS_SHOP_ORDER_SQL = "select max(" + ShopItem.SHOP_ORDER + ") from "
             + ShopItem.TABLE;
+
+    private static final String[] GET_ITEMS_TO_REORDER__COLUMNS = new String[] { ShopItem.ID, ShopItem.SHOP_ORDER };
 
     private static final String[] GET_LIST_ITEMS__COLUMNS = new String[] { ShopItem.ID + " as _id", ShopItem.NAME,
             ShopItem.AMOUNT_TO_BUY };
@@ -77,6 +81,11 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
 
     public static String getItemName(Cursor cursor) {
         return cursor.getString(cursor.getColumnIndexOrThrow(ShopItem.NAME));
+    }
+
+    private Cursor getItemsToReorder(int deletedItemShopOrder) {
+        return this.database.query(ShopItem.TABLE, GET_ITEMS_TO_REORDER__COLUMNS, ITEMS_TO_REORDER_SELECTION_SQL,
+                new String[] { Integer.toString(deletedItemShopOrder) }, null, null, ShopItem.SHOP_ORDER);
     }
 
     public Cursor getListItems(boolean showAll) {
@@ -129,14 +138,14 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
 
     public void deleteItem(long id) {
         Cursor itemCursor = getItem(id);
-        // int itemShopOrder = getItemShopOrder(itemCursor);
+        int itemShopOrder = getItemShopOrder(itemCursor);
         itemCursor.close();
 
         this.database.beginTransaction();
         try {
             this.database.delete(ShopItem.TABLE, DELETE_ITEM_SQL, new String[] { Long.toString(id) });
 
-            Cursor cursor = getItems();
+            Cursor cursor = getItemsToReorder(itemShopOrder);
             if (cursor.moveToFirst()) {
                 do {
                     ContentValues contentValues = new ContentValues();
