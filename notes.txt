@@ -1,0 +1,9 @@
+"debugging" database example:
+
+@.../sdk/platform-tools
+
+adb -s emulator-5554 shell
+sqlite3 /data/data/name.alr.android_shopper/databases/main.db
+.header ON
+select * from item order by shop_order;
+.quit
