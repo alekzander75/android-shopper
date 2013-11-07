@@ -1,19 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/toggle_shown_menu_item"
-        android:alphabeticShortcut="t"
-        android:icon="@android:drawable/ic_menu_view"
-        android:numericShortcut="1"
-        android:orderInCategory="100"
-        android:title="Toggle Shown"/>
-    <item
         android:id="@+id/add_item_menu_item"
         android:alphabeticShortcut="a"
         android:icon="@android:drawable/ic_menu_add"
+        android:numericShortcut="1"
+        android:orderInCategory="100"
+        android:title="@string/add_item__title"/>
+    <item
+        android:id="@+id/toggle_shown_menu_item"
+        android:alphabeticShortcut="t"
+        android:icon="@android:drawable/ic_menu_view"
         android:numericShortcut="2"
         android:orderInCategory="200"
-        android:title="@string/add_item__title"/>
+        android:title="@string/toggle_shown__title"/>
     <item
         android:id="@+id/remove_item_menu_item"
         android:alphabeticShortcut="r"

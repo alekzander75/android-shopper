@@ -19,5 +19,6 @@
     <string name="raise_item">Raise item</string>
     <string name="lower_item_amount__text">V</string>
     <string name="item_name">Item Name</string>
+    <string name="toggle_shown__title">Toggle Shown</string>
 
 </resources>
