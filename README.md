@@ -3,8 +3,6 @@ android-shopper
 
 TODO:
 
-use API 15
-move toggle button to the right
 fix Dao reordering bugs
 save mode state
 add export-import data functions
