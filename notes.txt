@@ -1,4 +1,42 @@
+Old order fixer:
+---------------
+
+private static final String FIX_SHOP_ORDERS_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER
+        + " = (" + ShopItem.SHOP_ORDER + " - " + BIG_DUMMY_SHOP_ORDER + ")";
+
+private static final String FIX_SHOP_ORDER_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER
+        + " = ? where " + ShopItem.ID + " = ?";
+
+public void fixShopOrder(long id, int shopOrder) {
+    this.database.execSQL(FIX_SHOP_ORDER_SQL, new Object[] { shopOrder, id });
+}
+
+public void fixShopOrders() {
+    this.database.execSQL(FIX_SHOP_ORDERS_SQL);
+}
+
+private void doDebugAction() {
+    // FIX ITEM ORDER
+    Cursor cursor = this.shopperOpenHelper.getItems();
+    try {
+        if (cursor.moveToFirst()) {
+            int i = 1;
+            do {
+                long id = cursor.getLong(0);
+                this.shopperOpenHelper.fixShopOrder(id, ShopperOpenHelper.BIG_DUMMY_SHOP_ORDER + i);
+                cursor.moveToNext();
+                i++;
+            } while (!cursor.isAfterLast());
+        }
+    } finally {
+        cursor.close();
+    }
+    this.shopperOpenHelper.fixShopOrders();
+}
+
+
 "debugging" database example:
+----------------------------
 
 @.../sdk/platform-tools
 

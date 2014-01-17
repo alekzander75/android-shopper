@@ -1,9 +1,11 @@
 package name.alr.android_shopper;
 
 import name.alr.android_shopper.database.ShopItem;
-import name.alr.android_shopper.database.ShopperOpenHelper;
+import name.alr.android_shopper.database.ShopItemContentProvider;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -24,7 +26,7 @@ import android.widget.ListView;
  */
 public class MainActivity extends Activity {
 
-    private static final String SHOWING_ALL_BUNDLE_KEY = "showingAll";
+    static final String SHOWING_ALL_BUNDLE_KEY = "showingAll";
 
     private static final int ADD_ITEM_DIALOG_ID = 1;
 
@@ -32,11 +34,7 @@ public class MainActivity extends Activity {
 
     private final OnRemoveItemMenuItemClickListener onRemoveItemMenuItemClickListener = new OnRemoveItemMenuItemClickListener();
 
-    private ShopperOpenHelper shopperOpenHelper;
-
     private ListView listView;
-
-    private Cursor itemsCursor;
 
     private AddItemDialogManager addItemDialogManager;
 
@@ -46,28 +44,25 @@ public class MainActivity extends Activity {
 
     private Vibrator vibrator;
 
+    private MainListAdapter mainListAdapter;
+
+    private LoaderCallbacks<Cursor> loaderCallbacks;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main_activity);
 
-        this.shopperOpenHelper = new ShopperOpenHelper(this);
-        this.shopperOpenHelper.initialize();
-
-        setupItemsCursor();
-
         this.listView = (ListView) findViewById(R.id.mainListView);
-
-        setupMainListAdapter();
 
         this.listView.setItemsCanFocus(false);
         this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         this.listView.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
                 AdapterContextMenuInfo adapterContextMenuInfo = (AdapterContextMenuInfo) menuInfo;
-                Cursor item = getShopperOpenHelper().getItem(adapterContextMenuInfo.id);
-                String itemName = ShopperOpenHelper.getItemName(item);
+                Cursor item = getItem(adapterContextMenuInfo.id);
+                String itemName = getItemName(item);
                 item.close();
 
                 menu.setHeaderTitle("\"" + itemName + "\"");
@@ -77,16 +72,17 @@ public class MainActivity extends Activity {
             }
         });
 
+        mainListAdapter = new MainListAdapter(this, R.layout.main_list_entry, null, new String[] {
+                ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
+                R.id.mainListEntryNameTextView }, this);
+        this.listView.setAdapter(mainListAdapter);
+
+        loaderCallbacks = new MainActityLoaderCallbacks(this, mainListAdapter);
+        getLoaderManager().initLoader(0, newLoaderArgs(), loaderCallbacks);
+
         this.preferencesIntent = new Intent(this, ShopperPreferenceActivity.class);
 
         this.vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
-    }
-
-    @Override
-    protected void onDestroy() {
-        this.shopperOpenHelper.closeDatabase();
-
-        super.onDestroy();
     }
 
     @Override
@@ -163,18 +159,17 @@ public class MainActivity extends Activity {
     }
 
     private void removeAllItems() {
-        this.shopperOpenHelper.deleteAllItems();
-        this.itemsCursor.requery();
+        getContentResolver().delete(ShopItemContentProvider.ITEMS_CONTENT_URI, null, null);
     }
 
     private void removeItem(long id) {
-        this.shopperOpenHelper.deleteItem(id);
-        this.itemsCursor.requery();
+        getContentResolver().delete(ShopItemContentProvider.getShopItemUri(id), null, null);
     }
 
     private void addItem(String name) {
-        this.shopperOpenHelper.addItem(name);
-        this.itemsCursor.requery();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ShopItem.NAME, name);
+        getContentResolver().insert(ShopItemContentProvider.ITEMS_CONTENT_URI, contentValues);
     }
 
     private void doDebugAction() {
@@ -220,23 +215,6 @@ public class MainActivity extends Activity {
         // } catch (Exception exception) {
         // throw new RuntimeException("Failed to export items.", exception);
         // }
-
-        // FIX ITEM ORDER
-        // Cursor cursor = this.shopperOpenHelper.getItems();
-        // try {
-        // if (cursor.moveToFirst()) {
-        // int i = 1;
-        // do {
-        // long id = cursor.getLong(0);
-        // this.shopperOpenHelper.fixShopOrder(id, ShopperOpenHelper.BIG_DUMMY_SHOP_ORDER + i);
-        // cursor.moveToNext();
-        // i++;
-        // } while (!cursor.isAfterLast());
-        // }
-        // } finally {
-        // cursor.close();
-        // }
-        // this.shopperOpenHelper.fixShopOrders();
     }
 
     public void mainListEntryAlterButtonOnClick(View view) {
@@ -249,8 +227,21 @@ public class MainActivity extends Activity {
 
     private void mainListEntryIncreaseButtonOnClick(View view) {
         vibrateShort();
-        this.shopperOpenHelper.increaseItemAmount(getItemId(view));
-        this.itemsCursor.requery();
+
+        long id = getItemId(view);
+        getContentResolver().call(ShopItemContentProvider.ITEMS_CONTENT_URI,
+                ShopItemContentProvider.INCREASE_ITEM_AMOUNT_METHOD, Long.toString(id), null);
+    }
+
+    /**
+     * @return positioned {@link Cursor}, or <code>null</code>. remeber to {@link Cursor#close()} it.
+     */
+    private Cursor getItem(long id) {
+        return getContentResolver().query(ShopItemContentProvider.getShopItemUri(id), null, null, null, null);
+    }
+
+    private static String getItemName(Cursor cursor) {
+        return cursor.getString(cursor.getColumnIndexOrThrow(ShopItem.NAME));
     }
 
     private long getItemId(View view) {
@@ -261,23 +252,28 @@ public class MainActivity extends Activity {
     private void mainListEntryDecreaseButtonOnClick(View view) {
         int position = this.listView.getPositionForView(view);
         Cursor item = (Cursor) this.listView.getItemAtPosition(position);
-        int itemAmount = ShopperOpenHelper.getItemAmount(item);
+        int itemAmount = getItemAmount(item);
 
         if (itemAmount > 0) {
             if (itemAmount == 1) {
                 vibrateShort();
             }
-            this.shopperOpenHelper.decreaseItemAmount(item.getLong(0));
-            this.itemsCursor.requery();
+            getContentResolver().call(ShopItemContentProvider.ITEMS_CONTENT_URI,
+                    ShopItemContentProvider.DECREASE_ITEM_AMOUNT_METHOD, Long.toString(item.getLong(0)), null);
         }
+    }
+
+    private static int getItemAmount(Cursor cursor) {
+        return cursor.getInt(cursor.getColumnIndexOrThrow(ShopItem.AMOUNT_TO_BUY));
     }
 
     public void mainListEntryRaiseButtonOnClick(View view) {
         int position = this.listView.getPositionForView(view);
         if (position > 0) {
             vibrateShort();
-            this.shopperOpenHelper.raiseItem(this.listView.getItemIdAtPosition(position));
-            this.itemsCursor.requery();
+            long id = this.listView.getItemIdAtPosition(position);
+            getContentResolver().call(ShopItemContentProvider.ITEMS_CONTENT_URI,
+                    ShopItemContentProvider.RAISE_ITEM_METHOD, Long.toString(id), null);
         }
     }
 
@@ -285,8 +281,9 @@ public class MainActivity extends Activity {
         int position = this.listView.getPositionForView(view);
         if (position < (this.listView.getCount() - 1)) {
             vibrateShort();
-            this.shopperOpenHelper.lowerItem(this.listView.getItemIdAtPosition(position));
-            this.itemsCursor.requery();
+            long id = this.listView.getItemIdAtPosition(position);
+            getContentResolver().call(ShopItemContentProvider.ITEMS_CONTENT_URI,
+                    ShopItemContentProvider.LOWER_ITEM_METHOD, Long.toString(id), null);
         }
     }
 
@@ -295,32 +292,18 @@ public class MainActivity extends Activity {
     }
 
     private void toggleShownItems() {
-        disardCursor();
         this.showingAll = !this.isShowingAll();
-        setupNewCursorAndRefreshList();
+        getLoaderManager().restartLoader(0, newLoaderArgs(), this.loaderCallbacks);
     }
 
-    private void setupItemsCursor() {
-        this.itemsCursor = this.shopperOpenHelper.getListItems(this.isShowingAll());
-        startManagingCursor(this.itemsCursor);
-    }
-
-    /**
-     * Uses current {@link #listView} and {@link #itemsCursor}.
-     */
-    private void setupMainListAdapter() {
-        MainListAdapter adapter = new MainListAdapter(this, R.layout.main_list_entry, this.itemsCursor, new String[] {
-                ShopItem.AMOUNT_TO_BUY, ShopItem.NAME }, new int[] { R.id.mainListEntryAmountTextView,
-                R.id.mainListEntryNameTextView }, this);
-        this.listView.setAdapter(adapter);
+    private Bundle newLoaderArgs() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(SHOWING_ALL_BUNDLE_KEY, showingAll);
+        return bundle;
     }
 
     private OnRemoveItemMenuItemClickListener getOnRemoveItemMenuItemClickListener() {
         return this.onRemoveItemMenuItemClickListener;
-    }
-
-    private ShopperOpenHelper getShopperOpenHelper() {
-        return this.shopperOpenHelper;
     }
 
     boolean isShowingAll() {
@@ -348,18 +331,6 @@ public class MainActivity extends Activity {
             return;
         }
         this.showingAll = savedInstanceState.getBoolean(SHOWING_ALL_BUNDLE_KEY, SHOWING_ALL_DEFAULT_VALUE);
-        disardCursor();
-        setupNewCursorAndRefreshList();
-    }
-
-    private void setupNewCursorAndRefreshList() {
-        setupItemsCursor();
-        setupMainListAdapter();
-    }
-
-    private void disardCursor() {
-        stopManagingCursor(this.itemsCursor);
-        this.itemsCursor.close();
     }
 
 }

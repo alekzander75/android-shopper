@@ -16,7 +16,7 @@ public class MainListAdapter extends SimpleCursorAdapter {
     private final MainActivity mainActivity;
 
     public MainListAdapter(Context context, int layout, Cursor c, String[] from, int[] to, MainActivity mainActivity) {
-        super(context, layout, c, from, to);
+        super(context, layout, c, from, to, 0);
         this.mainActivity = mainActivity;
     }
 

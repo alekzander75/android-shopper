@@ -9,19 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * @author alopezruiz@gmail.com (Alejandro Lopez Ruiz)
  */
-public class ShopperOpenHelper extends SQLiteOpenHelper {
+class ShopperOpenHelper extends SQLiteOpenHelper {
 
     private static final String ITEMS_TO_REORDER_SELECTION_SQL = ShopItem.SHOP_ORDER + " > ?";
 
-    public static final int BIG_DUMMY_SHOP_ORDER = 1000;
-
-    private static final String SHOW_ONLY_SELECTION_SQL = ShopItem.AMOUNT_TO_BUY + " > 0";
-
     private static final int DUMMY_SHOP_ORDER = -1;
-
-    // private static final String REORDER_ITEMS_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER +
-    // " = ("
-    // + ShopItem.SHOP_ORDER + " - 1) where " + ShopItem.SHOP_ORDER + " > ?";
 
     private static final String INCREASE_ITEM_AMOUNT_SQL = "update " + ShopItem.TABLE + " set "
             + ShopItem.AMOUNT_TO_BUY + " = (" + ShopItem.AMOUNT_TO_BUY + " + 1) where " + ShopItem.ID + " = ?";
@@ -36,23 +28,8 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
 
     private static final String[] GET_ITEMS_TO_REORDER__COLUMNS = new String[] { ShopItem.ID, ShopItem.SHOP_ORDER };
 
-    private static final String[] GET_LIST_ITEMS__COLUMNS = new String[] { ShopItem.ID + " as _id", ShopItem.NAME,
-            ShopItem.AMOUNT_TO_BUY };
-
-    private static final String FIX_SHOP_ORDER_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER
-            + " = ? where " + ShopItem.ID + " = ?";
-
-    private static final String FIX_SHOP_ORDERS_SQL = "update " + ShopItem.TABLE + " set " + ShopItem.SHOP_ORDER
-            + " = (" + ShopItem.SHOP_ORDER + " - " + BIG_DUMMY_SHOP_ORDER + ")";
-
-    private SQLiteDatabase database;
-
     public ShopperOpenHelper(Context context) {
         super(context, "main.db", null, 1);
-    }
-
-    public void initialize() {
-        this.database = getWritableDatabase();
     }
 
     @Override
@@ -68,48 +45,29 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     }
 
     public void closeDatabase() {
-        this.database.close();
+        getWritableDatabase().close();
     }
 
     public static int getItemShopOrder(Cursor cursor) {
         return cursor.getInt(cursor.getColumnIndexOrThrow(ShopItem.SHOP_ORDER));
     }
 
-    public static int getItemAmount(Cursor cursor) {
-        return cursor.getInt(cursor.getColumnIndexOrThrow(ShopItem.AMOUNT_TO_BUY));
-    }
-
-    public static String getItemName(Cursor cursor) {
-        return cursor.getString(cursor.getColumnIndexOrThrow(ShopItem.NAME));
-    }
-
     private Cursor getItemsToReorder(int deletedItemShopOrder) {
-        return this.database.query(ShopItem.TABLE, GET_ITEMS_TO_REORDER__COLUMNS, ITEMS_TO_REORDER_SELECTION_SQL,
-                new String[] { Integer.toString(deletedItemShopOrder) }, null, null, ShopItem.SHOP_ORDER);
-    }
-
-    public Cursor getListItems(boolean showAll) {
-        String selection = showAll ? null : SHOW_ONLY_SELECTION_SQL;
-        return this.database.query(ShopItem.TABLE, GET_LIST_ITEMS__COLUMNS, selection, null, null, null,
+        return getReadableDatabase().query(ShopItem.TABLE, GET_ITEMS_TO_REORDER__COLUMNS,
+                ITEMS_TO_REORDER_SELECTION_SQL, new String[] { Integer.toString(deletedItemShopOrder) }, null, null,
                 ShopItem.SHOP_ORDER);
-        // return this.database.query(ShopItem.TABLE, GET_LIST_ITEMS__COLUMNS, null, null, null, null, ShopItem.NAME
-        // + " COLLATE NOCASE");
     }
 
-    public Cursor getItems() {
-        return this.database.query(ShopItem.TABLE, null, null, null, null, null, ShopItem.SHOP_ORDER);
-    }
-
-    public void addItem(String name) {
+    public long addItem(String name) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ShopItem.NAME, name);
         contentValues.put(ShopItem.SHOP_ORDER, getMaxItemsShopOrder() + 1);
         contentValues.put(ShopItem.AMOUNT_TO_BUY, 1);
-        this.database.insertOrThrow(ShopItem.TABLE, null, contentValues);
+        return getWritableDatabase().insertOrThrow(ShopItem.TABLE, null, contentValues);
     }
 
     private int getMaxItemsShopOrder() {
-        Cursor cursor = this.database.rawQuery(MAX_ITEMS_SHOP_ORDER_SQL, null);
+        Cursor cursor = getReadableDatabase().rawQuery(MAX_ITEMS_SHOP_ORDER_SQL, null);
         int result = 0;
         if (cursor.moveToFirst()) {
             result = cursor.getInt(0);
@@ -122,7 +80,7 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
      * @return positioned {@link Cursor}, or <code>null</code>. remeber to {@link Cursor#close()} it.
      */
     public Cursor getItem(long id) {
-        Cursor cursor = this.database.query(ShopItem.TABLE, null, ShopItem.ID + " = ?",
+        Cursor cursor = getReadableDatabase().query(ShopItem.TABLE, null, ShopItem.ID + " = ?",
                 new String[] { Long.toString(id) }, null, null, null);
         if (cursor.moveToFirst()) {
             return cursor;
@@ -132,25 +90,27 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteAllItems() {
-        this.database.delete(ShopItem.TABLE, null, null);
+    public int deleteAllItems() {
+        return getWritableDatabase().delete(ShopItem.TABLE, null, null);
     }
 
     public void deleteItem(long id) {
+        SQLiteDatabase database = getWritableDatabase();
+
         Cursor itemCursor = getItem(id);
         int itemShopOrder = getItemShopOrder(itemCursor);
         itemCursor.close();
 
-        this.database.beginTransaction();
+        database.beginTransaction();
         try {
-            this.database.delete(ShopItem.TABLE, DELETE_ITEM_SQL, new String[] { Long.toString(id) });
+            database.delete(ShopItem.TABLE, DELETE_ITEM_SQL, new String[] { Long.toString(id) });
 
             Cursor cursor = getItemsToReorder(itemShopOrder);
             if (cursor.moveToFirst()) {
                 do {
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(ShopItem.SHOP_ORDER, getItemShopOrder(cursor) - 1);
-                    this.database.update(ShopItem.TABLE, contentValues, ShopItem.ID + " = ?",
+                    database.update(ShopItem.TABLE, contentValues, ShopItem.ID + " = ?",
                             new String[] { Long.toString(cursor.getLong(0)) });
 
                     cursor.moveToNext();
@@ -158,20 +118,18 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
             }
             cursor.close();
 
-            // this.database.execSQL(REORDER_ITEMS_SQL, new Object[] { itemShopOrder });
-
-            this.database.setTransactionSuccessful();
+            database.setTransactionSuccessful();
         } finally {
-            this.database.endTransaction();
+            database.endTransaction();
         }
     }
 
     public void increaseItemAmount(long id) {
-        this.database.execSQL(INCREASE_ITEM_AMOUNT_SQL, new Object[] { id });
+        getWritableDatabase().execSQL(INCREASE_ITEM_AMOUNT_SQL, new Object[] { id });
     }
 
     public void decreaseItemAmount(long id) {
-        this.database.execSQL(DECREASE_ITEM_AMOUNT_SQL, new Object[] { id });
+        getWritableDatabase().execSQL(DECREASE_ITEM_AMOUNT_SQL, new Object[] { id });
     }
 
     public void raiseItem(long id) {
@@ -182,25 +140,25 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
     }
 
     private void swapShopPositions(long id, int itemShopOrder, int otherItemShopOrder) {
-        this.database.beginTransaction();
+        SQLiteDatabase database = getWritableDatabase();
+        database.beginTransaction();
         try {
             ContentValues contentValues = new ContentValues();
 
             contentValues.put(ShopItem.SHOP_ORDER, DUMMY_SHOP_ORDER);
-            this.database.update(ShopItem.TABLE, contentValues, ShopItem.SHOP_ORDER + " = ?",
+            database.update(ShopItem.TABLE, contentValues, ShopItem.SHOP_ORDER + " = ?",
                     new String[] { Integer.toString(otherItemShopOrder) });
 
             contentValues.put(ShopItem.SHOP_ORDER, otherItemShopOrder);
-            this.database.update(ShopItem.TABLE, contentValues, ShopItem.ID + " = ?",
-                    new String[] { Long.toString(id) });
+            database.update(ShopItem.TABLE, contentValues, ShopItem.ID + " = ?", new String[] { Long.toString(id) });
 
             contentValues.put(ShopItem.SHOP_ORDER, itemShopOrder);
-            this.database.update(ShopItem.TABLE, contentValues, ShopItem.SHOP_ORDER + " = ?",
+            database.update(ShopItem.TABLE, contentValues, ShopItem.SHOP_ORDER + " = ?",
                     new String[] { Integer.toString(DUMMY_SHOP_ORDER) });
 
-            this.database.setTransactionSuccessful();
+            database.setTransactionSuccessful();
         } finally {
-            this.database.endTransaction();
+            database.endTransaction();
         }
     }
 
@@ -209,14 +167,6 @@ public class ShopperOpenHelper extends SQLiteOpenHelper {
         int otherItemShopOrder = itemShopOrder + 1;
 
         swapShopPositions(id, itemShopOrder, otherItemShopOrder);
-    }
-
-    public void fixShopOrder(long id, int shopOrder) {
-        this.database.execSQL(FIX_SHOP_ORDER_SQL, new Object[] { shopOrder, id });
-    }
-
-    public void fixShopOrders() {
-        this.database.execSQL(FIX_SHOP_ORDERS_SQL);
     }
 
 }
