@@ -3,7 +3,6 @@ android-shopper
 
 TODO:
 
-Stop using deprecated APIs.
 Action Bar / whatever instead of menu.
 Add export-import data functions.
 Drag-n-drop to reorder items.
