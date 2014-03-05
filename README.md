@@ -3,7 +3,6 @@ android-shopper
 
 TODO:
 
-Action Bar / whatever instead of menu.
 Add export-import data functions.
 Drag-n-drop to reorder items.
 
