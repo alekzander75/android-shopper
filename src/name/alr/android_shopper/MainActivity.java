@@ -3,7 +3,6 @@ package name.alr.android_shopper;
 import name.alr.android_shopper.database.ShopItem;
 import name.alr.android_shopper.database.ShopItemContentProvider;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -28,15 +27,12 @@ public class MainActivity extends Activity {
 
     static final String SHOWING_ALL_BUNDLE_KEY = "showingAll";
 
-    private static final int ADD_ITEM_DIALOG_ID = 1;
-
     private static final boolean SHOWING_ALL_DEFAULT_VALUE = true;
 
     private final OnRemoveItemMenuItemClickListener onRemoveItemMenuItemClickListener = new OnRemoveItemMenuItemClickListener();
+    private final AddItemDialogFragment.SubmitListener dialogSubmitListener = new AddItemDialogSubmitListener();
 
     private ListView listView;
-
-    private AddItemDialogManager addItemDialogManager;
 
     private boolean showingAll = SHOWING_ALL_DEFAULT_VALUE;
 
@@ -101,7 +97,9 @@ public class MainActivity extends Activity {
             return true;
         }
         case (R.id.add_item_menu_item): {
-            showDialog(ADD_ITEM_DIALOG_ID);
+            AddItemDialogFragment dialogFragment = new AddItemDialogFragment();
+            dialogFragment.setSubmitListener(dialogSubmitListener);
+            dialogFragment.show(getFragmentManager(), null);
             return true;
         }
         case (R.id.remove_item_menu_item): {
@@ -133,29 +131,6 @@ public class MainActivity extends Activity {
         removeItem.setVisible(this.listView.getSelectedItemPosition() > -1);
 
         return true;
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id, Bundle args) {
-        switch (id) {
-        case ADD_ITEM_DIALOG_ID:
-            this.addItemDialogManager = new AddItemDialogManager(this, ADD_ITEM_DIALOG_ID, new DialogSubmitListener() {
-                public void onSubmit(String name) {
-                    addItem(name);
-                }
-            });
-            return this.addItemDialogManager.getDialog();
-        }
-        return null;
-    }
-
-    @Override
-    protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
-        switch (id) {
-        case ADD_ITEM_DIALOG_ID:
-            this.addItemDialogManager.onPrepareDialog();
-            break;
-        }
     }
 
     private void removeAllItems() {
@@ -315,6 +290,12 @@ public class MainActivity extends Activity {
             AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
             removeItem(menuInfo.id);
             return true;
+        }
+    }
+
+    private final class AddItemDialogSubmitListener implements AddItemDialogFragment.SubmitListener {
+        public void onSubmit(String name) {
+            addItem(name);
         }
     }
 
