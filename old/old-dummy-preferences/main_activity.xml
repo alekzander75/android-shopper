@@ -35,5 +35,12 @@
         android:numericShortcut="5"
         android:orderInCategory="500"
         android:title="@string/do_debug_action__label"/>
+    <item
+        android:id="@+id/preferences_menu_item"
+        android:alphabeticShortcut="p"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:numericShortcut="6"
+        android:orderInCategory="600"
+        android:title="@string/preferences__label"/>
 
 </menu>

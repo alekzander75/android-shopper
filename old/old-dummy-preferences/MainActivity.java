@@ -5,6 +5,7 @@ import name.alr.android_shopper.database.ShopItemContentProvider;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -34,6 +35,8 @@ public class MainActivity extends Activity {
     private ListView listView;
 
     private boolean showingAll = SHOWING_ALL_DEFAULT_VALUE;
+
+    private Intent preferencesIntent;
 
     private Vibrator vibrator;
 
@@ -73,6 +76,8 @@ public class MainActivity extends Activity {
         loaderCallbacks = new MainActityLoaderCallbacks(this, mainListAdapter);
         getLoaderManager().initLoader(0, newLoaderArgs(), loaderCallbacks);
 
+        this.preferencesIntent = new Intent(this, ShopperPreferenceActivity.class);
+
         this.vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
     }
 
@@ -107,6 +112,10 @@ public class MainActivity extends Activity {
         }
         case (R.id.do_debug_action_menu_item): {
             doDebugAction();
+            return true;
+        }
+        case (R.id.preferences_menu_item): {
+            startActivity(this.preferencesIntent);
             return true;
         }
         }

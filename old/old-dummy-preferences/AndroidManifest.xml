@@ -21,6 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="ShopperPreferenceActivity" android:label="@string/preferences__label"></activity>
         <provider android:authorities="name.alr.android_shopper.shopitem.contentprovider" android:name=".database.ShopItemContentProvider" android:exported="false"></provider>
     </application>
 

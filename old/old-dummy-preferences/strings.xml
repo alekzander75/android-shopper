@@ -5,6 +5,7 @@
     <string name="cancel">Cancel</string>
     <string name="do_debug_action__label">Do Magic</string>
     <string name="main_activity__label">Shopper</string>
+    <string name="preferences__label">Preferences</string>
     <string name="remove_item__title">Remove</string>
     <string name="remove_all_items__title">Remove All</string>
     <string name="alter_amount">Alter amount</string>
