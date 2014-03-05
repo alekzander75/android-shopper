@@ -59,7 +59,8 @@ public class MainActivity extends Activity {
                 item.close();
 
                 menu.setHeaderTitle("\"" + itemName + "\"");
-                MenuItem removeItemMenuItem = menu.add(0, Menu.NONE, Menu.NONE, R.string.remove_item__title);
+                MenuItem removeItemMenuItem = menu.add(0, R.id.remove_item_menu_item, Menu.NONE,
+                        R.string.remove_item__title);
                 removeItemMenuItem.setOnMenuItemClickListener(getOnRemoveItemMenuItemClickListener());
             }
         });
@@ -96,6 +97,10 @@ public class MainActivity extends Activity {
             dialogFragment.show(getFragmentManager(), null);
             return true;
         }
+        case (R.id.remove_item_menu_item): {
+            removeItem(this.listView.getSelectedItemId());
+            return true;
+        }
         case (R.id.remove_all_items_menu_item): {
             removeAllItems();
             return true;
@@ -107,6 +112,16 @@ public class MainActivity extends Activity {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem removeItem = menu.findItem(R.id.remove_item_menu_item);
+        removeItem.setVisible(this.listView.getSelectedItemPosition() > -1);
+
+        return true;
     }
 
     private void removeAllItems() {
