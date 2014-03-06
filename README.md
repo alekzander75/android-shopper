@@ -3,11 +3,10 @@ android-shopper
 
 TODO:
 
-Add export-import data functions. Maybe use Backup API? Or app data folders? Or both?
+Add export-import data functions. Backup API? App data folders? External Storage?
 	https://developer.android.com/guide/topics/data/backup.html
-	https://developer.android.com/google/backup/index.html
-	http://www.androidpolice.com/2013/04/04/google-allows-developers-to-backup-data-to-your-drive-account-creates-custom-properties-for-docs/
-	http://pocketnow.com/2013/04/04/google-drive-app-folders
+	https://developers.google.com/drive/web/appdata
+	https://developer.android.com/guide/topics/data/data-storage.html#filesExternal
 
 Drag-n-drop to reorder items.
 
