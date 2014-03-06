@@ -8,9 +8,11 @@ Add export-import data functions. Backup API? App data folders? External Storage
 	https://developers.google.com/drive/web/appdata
 	https://developer.android.com/guide/topics/data/data-storage.html#filesExternal
 
+Pocket mode: Don't go to sleep in shopping mode?
+
 Drag-n-drop to reorder items.
 
-Pocket mode: Don't go to sleep in shopping mode?
+Slide left to delete item.
 
 UI/Application Exerciser Monkey
 https://developer.android.com/tools/help/monkey.html
