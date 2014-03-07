@@ -3,6 +3,8 @@ android-shopper
 
 TODO:
 
+remove_all_items confirm dialog.
+
 Add export-import data functions. Backup API? App data folders? External Storage?
 	https://developer.android.com/guide/topics/data/backup.html
 	https://developers.google.com/drive/web/appdata
