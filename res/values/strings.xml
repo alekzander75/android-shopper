@@ -7,6 +7,9 @@
     <string name="main_activity__label">Shopper</string>
     <string name="remove_item__title">Remove</string>
     <string name="remove_all_items__title">Remove All</string>
+    <string name="remove_all_items__toast">Removed All</string>
+    <string name="export_items__title">Export To File</string>
+    <string name="export_items__toast">Exported To File</string>
     <string name="alter_amount">Alter amount</string>
     <string name="increase_amount">Increase amount</string>
     <string name="decrease_amount">Decrease amount</string>

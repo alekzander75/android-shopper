@@ -16,19 +16,27 @@
         android:orderInCategory="200"
         android:title="@string/add_item__title"/>
     <item
-        android:id="@+id/remove_all_items_menu_item"
-        android:alphabeticShortcut="l"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:id="@+id/export_items_menu_item"
+        android:alphabeticShortcut="e"
+        android:icon="@android:drawable/ic_menu_save"
         android:numericShortcut="3"
         android:orderInCategory="300"
+        android:showAsAction="never"
+        android:title="@string/export_items__title"/>
+    <item
+        android:id="@+id/remove_all_items_menu_item"
+        android:alphabeticShortcut="r"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:numericShortcut="4"
+        android:orderInCategory="400"
         android:showAsAction="never"
         android:title="@string/remove_all_items__title"/>
     <item
         android:id="@+id/do_debug_action_menu_item"
-        android:alphabeticShortcut="e"
-        android:icon="@android:drawable/ic_menu_save"
-        android:numericShortcut="4"
-        android:orderInCategory="400"
+        android:alphabeticShortcut="x"
+        android:icon="@android:drawable/ic_menu_directions"
+        android:numericShortcut="5"
+        android:orderInCategory="500"
         android:showAsAction="never"
         android:title="@string/do_debug_action__label"/>
 

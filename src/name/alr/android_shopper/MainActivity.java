@@ -16,6 +16,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 
@@ -96,8 +97,15 @@ public class MainActivity extends Activity {
             dialogFragment.show(getFragmentManager(), null);
             return true;
         }
+        case (R.id.export_items_menu_item): {
+            // TODO: this
+            Toast.makeText(this, R.string.export_items__toast, Toast.LENGTH_SHORT).show();
+            return true;
+        }
         case (R.id.remove_all_items_menu_item): {
+            // TODO: add confirm dialog
             removeAllItems();
+            Toast.makeText(this, R.string.remove_all_items__toast, Toast.LENGTH_SHORT).show();
             return true;
         }
         case (R.id.do_debug_action_menu_item): {
@@ -110,7 +118,8 @@ public class MainActivity extends Activity {
     }
 
     private void removeAllItems() {
-        getContentResolver().delete(ShopItemContentProvider.ITEMS_CONTENT_URI, null, null);
+        // TODO: re-enable after adding confirm dialog
+        // getContentResolver().delete(ShopItemContentProvider.ITEMS_CONTENT_URI, null, null);
     }
 
     private void removeItem(long id) {
