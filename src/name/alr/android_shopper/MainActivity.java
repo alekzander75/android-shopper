@@ -104,6 +104,7 @@ public class MainActivity extends Activity {
         }
         case (R.id.remove_all_items_menu_item): {
             // TODO: add confirm dialog
+            // https://stackoverflow.com/questions/12912181/simplest-yes-no-dialog-fragment
             removeAllItems();
             Toast.makeText(this, R.string.remove_all_items__toast, Toast.LENGTH_SHORT).show();
             return true;
