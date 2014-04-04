@@ -5,8 +5,11 @@ TODO:
 
 remove_all_items confirm dialog.
 
-Improve export-import data functions. App data folders?
-	https://developers.google.com/drive/web/appdata
+Improve export-import data functions.
+	App data folders?
+		https://developers.google.com/drive/web/appdata
+	Switch to use a "generic" file chooser (even if the user must install another app).
+		Maybe check if that exists and if not then use the FileExplorer lib intent.
 
 Pocket mode: Don't go to sleep in shopping mode?
 
