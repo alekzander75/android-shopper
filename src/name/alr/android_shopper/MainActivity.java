@@ -220,6 +220,7 @@ public class MainActivity extends Activity {
         intent.putExtra(FileDialog.CAN_SELECT_DIR, false);
         intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
         intent.putExtra(FileDialog.FORMAT_FILTER, new String[] { FILE_EXTENSION });
+        intent.putExtra(FileDialog.OPTION_ONE_CLICK_SELECT, true);
         startActivityForResult(intent, FILE_IMPORT_REQUEST_CODE);
     }
 
