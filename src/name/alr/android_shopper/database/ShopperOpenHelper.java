@@ -48,7 +48,7 @@ class ShopperOpenHelper extends SQLiteOpenHelper {
         getWritableDatabase().close();
     }
 
-    public static int getItemShopOrder(Cursor cursor) {
+    private static int getItemShopOrder(Cursor cursor) {
         return cursor.getInt(cursor.getColumnIndexOrThrow(ShopItem.SHOP_ORDER));
     }
 
@@ -58,11 +58,11 @@ class ShopperOpenHelper extends SQLiteOpenHelper {
                 ShopItem.SHOP_ORDER);
     }
 
-    public long addItem(String name) {
+    public long addItem(String name, int amount) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ShopItem.NAME, name);
         contentValues.put(ShopItem.SHOP_ORDER, getMaxItemsShopOrder() + 1);
-        contentValues.put(ShopItem.AMOUNT_TO_BUY, 1);
+        contentValues.put(ShopItem.AMOUNT_TO_BUY, amount);
         return getWritableDatabase().insertOrThrow(ShopItem.TABLE, null, contentValues);
     }
 

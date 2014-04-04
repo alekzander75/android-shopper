@@ -1,5 +1,12 @@
 package name.alr.android_shopper;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+
 import name.alr.android_shopper.database.ShopItem;
 import name.alr.android_shopper.database.ShopItemContentProvider;
 import android.app.Activity;
@@ -7,6 +14,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -16,9 +24,9 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * @author alopezruiz@gmail.com (Alejandro Lopez Ruiz)
@@ -98,15 +106,19 @@ public class MainActivity extends Activity {
             return true;
         }
         case (R.id.export_items_menu_item): {
-            // TODO: this
-            Toast.makeText(this, R.string.export_items__toast, Toast.LENGTH_SHORT).show();
+            exportItems();
+            return true;
+        }
+        case (R.id.import_items_menu_item): {
+            importItems();
             return true;
         }
         case (R.id.remove_all_items_menu_item): {
             // TODO: add confirm dialog
             // https://stackoverflow.com/questions/12912181/simplest-yes-no-dialog-fragment
-            removeAllItems();
-            Toast.makeText(this, R.string.remove_all_items__toast, Toast.LENGTH_SHORT).show();
+            // TODO: re-enable after adding confirm dialog
+            // removeAllItems();
+            // Toast.makeText(this, R.string.remove_all_items__toast, Toast.LENGTH_SHORT).show();
             return true;
         }
         case (R.id.do_debug_action_menu_item): {
@@ -118,18 +130,96 @@ public class MainActivity extends Activity {
         return false;
     }
 
+    private boolean isExternalStorageWritable() {
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+    }
+
+    private boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
+    }
+
+    private void exportItems() {
+        if (!isExternalStorageWritable()) {
+            Toast.makeText(this, R.string.export_items__device_busy_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        File directory = getExternalFilesDir(null);
+        File file = new File(directory, "shopper-items.tsv");
+        try {
+            FileOutputStream stream = new FileOutputStream(file);
+            try {
+                Cursor cursor = this.getItems();
+                try {
+                    if (cursor.moveToFirst()) {
+                        do {
+                            String line = getItemAmount(cursor) + "\t" + getItemName(cursor) + "\n";
+                            stream.write(line.getBytes());
+                            cursor.moveToNext();
+                        } while (!cursor.isAfterLast());
+                    }
+                } finally {
+                    cursor.close();
+                }
+            } finally {
+                stream.close();
+            }
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to export items.", exception);
+        }
+
+        Toast.makeText(this, "Exported to " + file, Toast.LENGTH_LONG).show();
+    }
+
+    private void importItems() {
+        if (!isExternalStorageReadable()) {
+            Toast.makeText(this, R.string.import_items__device_busy_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        File directory = getExternalFilesDir(null);
+
+        LinkedList<String> lines = new LinkedList<String>();
+        try {
+            File file = new File(directory, "shopper-items.tsv");
+            FileInputStream stream = new FileInputStream(file);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            try {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    lines.add(line);
+                }
+            } finally {
+                reader.close();
+            }
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to read file.", exception);
+        }
+
+        // better safe than sorry
+        if (!lines.isEmpty()) {
+            removeAllItems();
+        }
+
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            addItem(split[1], Integer.parseInt(split[0]));
+        }
+
+        Toast.makeText(this, R.string.import_items__toast, Toast.LENGTH_SHORT).show();
+    }
+
     private void removeAllItems() {
-        // TODO: re-enable after adding confirm dialog
-        // getContentResolver().delete(ShopItemContentProvider.ITEMS_CONTENT_URI, null, null);
+        getContentResolver().delete(ShopItemContentProvider.ITEMS_CONTENT_URI, null, null);
     }
 
     private void removeItem(long id) {
         getContentResolver().delete(ShopItemContentProvider.getShopItemUri(id), null, null);
     }
 
-    private void addItem(String name) {
+    private void addItem(String name, int amount) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ShopItem.NAME, name);
+        contentValues.put(ShopItem.AMOUNT_TO_BUY, amount);
         getContentResolver().insert(ShopItemContentProvider.ITEMS_CONTENT_URI, contentValues);
     }
 
@@ -150,31 +240,6 @@ public class MainActivity extends Activity {
         // }
         // } finally {
         // cursor.close();
-        // }
-
-        // EXPORT DATA
-        // try {
-        // FileOutputStream stream = openFileOutput("shopper-items.tsv", Context.MODE_WORLD_READABLE);
-        // try {
-        // Cursor cursor = this.shopperOpenHelper.getItems();
-        // try {
-        // if (cursor.moveToFirst()) {
-        // do {
-        // String line = ShopperOpenHelper.getItemShopOrder(cursor) + "\t"
-        // + ShopperOpenHelper.getItemShopOrder(cursor) + "\t"
-        // + ShopperOpenHelper.getItemName(cursor) + "\n";
-        // stream.write(line.getBytes());
-        // cursor.moveToNext();
-        // } while (!cursor.isAfterLast());
-        // }
-        // } finally {
-        // cursor.close();
-        // }
-        // } finally {
-        // stream.close();
-        // }
-        // } catch (Exception exception) {
-        // throw new RuntimeException("Failed to export items.", exception);
         // }
     }
 
@@ -199,6 +264,14 @@ public class MainActivity extends Activity {
      */
     private Cursor getItem(long id) {
         return getContentResolver().query(ShopItemContentProvider.getShopItemUri(id), null, null, null, null);
+    }
+
+    /**
+     * @return ordered by shop order. remeber to {@link Cursor#close()} it.
+     */
+    private Cursor getItems() {
+        return getContentResolver().query(ShopItemContentProvider.ITEMS_CONTENT_URI, null, null, null,
+                ShopItem.SHOP_ORDER);
     }
 
     private static String getItemName(Cursor cursor) {
@@ -281,7 +354,7 @@ public class MainActivity extends Activity {
 
     private final class AddItemDialogSubmitListener implements AddItemDialogFragment.SubmitListener {
         public void onSubmit(String name) {
-            addItem(name);
+            addItem(name, 1);
         }
     }
 

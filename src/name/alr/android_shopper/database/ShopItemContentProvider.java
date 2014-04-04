@@ -91,7 +91,8 @@ public class ShopItemContentProvider extends ContentProvider {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        long rowId = this.shopperOpenHelper.addItem(initialValues.getAsString(ShopItem.NAME));
+        long rowId = this.shopperOpenHelper.addItem(initialValues.getAsString(ShopItem.NAME),
+                initialValues.getAsInteger(ShopItem.AMOUNT_TO_BUY));
 
         if (rowId > 0) {
             Uri itemUri = ContentUris.withAppendedId(ITEMS_CONTENT_URI, rowId);

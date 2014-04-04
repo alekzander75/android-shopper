@@ -5,10 +5,9 @@ TODO:
 
 remove_all_items confirm dialog.
 
-Add export-import data functions. Backup API? App data folders? External Storage?
-	https://developer.android.com/guide/topics/data/backup.html
+Improve export-import data functions. App data folders? + Let user choose from external storage.
 	https://developers.google.com/drive/web/appdata
-	https://developer.android.com/guide/topics/data/data-storage.html#filesExternal
+	https://code.google.com/p/android-file-dialog/
 
 Pocket mode: Don't go to sleep in shopping mode?
 

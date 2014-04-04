@@ -9,7 +9,11 @@
     <string name="remove_all_items__title">Remove All</string>
     <string name="remove_all_items__toast">Removed All</string>
     <string name="export_items__title">Export To File</string>
-    <string name="export_items__toast">Exported To File</string>
+    <!-- <string name="export_items__toast">Exported To File</string> -->
+    <string name="export_items__device_busy_error">External storage is not writable.</string>
+    <string name="import_items__title">Import From File</string>
+    <string name="import_items__toast">Imported From File</string>
+    <string name="import_items__device_busy_error">External storage is not readable.</string>
     <string name="alter_amount">Alter amount</string>
     <string name="increase_amount">Increase amount</string>
     <string name="decrease_amount">Decrease amount</string>
