@@ -7,11 +7,15 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 
+import com.lamerman.FileDialog;
+import com.lamerman.SelectionMode;
+
 import name.alr.android_shopper.database.ShopItem;
 import name.alr.android_shopper.database.ShopItemContentProvider;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,7 +39,9 @@ public class MainActivity extends Activity {
 
     static final String SHOWING_ALL_BUNDLE_KEY = "showingAll";
 
+    private static final String FILE_EXTENSION = "tsv";
     private static final boolean SHOWING_ALL_DEFAULT_VALUE = true;
+    private static final int FILE_IMPORT_REQUEST_CODE = 1;
 
     private final OnRemoveItemMenuItemClickListener onRemoveItemMenuItemClickListener = new OnRemoveItemMenuItemClickListener();
     private final AddItemDialogFragment.SubmitListener dialogSubmitListener = new AddItemDialogSubmitListener();
@@ -110,7 +116,7 @@ public class MainActivity extends Activity {
             return true;
         }
         case (R.id.import_items_menu_item): {
-            importItems();
+            chooseFileForImport();
             return true;
         }
         case (R.id.remove_all_items_menu_item): {
@@ -145,7 +151,7 @@ public class MainActivity extends Activity {
             return;
         }
         File directory = getExternalFilesDir(null);
-        File file = new File(directory, "shopper-items.tsv");
+        File file = new File(directory, "shopper-items." + FILE_EXTENSION);
         try {
             FileOutputStream stream = new FileOutputStream(file);
             try {
@@ -171,16 +177,11 @@ public class MainActivity extends Activity {
         Toast.makeText(this, "Exported to " + file, Toast.LENGTH_LONG).show();
     }
 
-    private void importItems() {
-        if (!isExternalStorageReadable()) {
-            Toast.makeText(this, R.string.import_items__device_busy_error, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        File directory = getExternalFilesDir(null);
+    private void importItems(String filePath) {
+        File file = new File(filePath);
 
         LinkedList<String> lines = new LinkedList<String>();
         try {
-            File file = new File(directory, "shopper-items.tsv");
             FileInputStream stream = new FileInputStream(file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             try {
@@ -206,6 +207,27 @@ public class MainActivity extends Activity {
         }
 
         Toast.makeText(this, R.string.import_items__toast, Toast.LENGTH_SHORT).show();
+    }
+
+    private void chooseFileForImport() {
+        if (!isExternalStorageReadable()) {
+            Toast.makeText(this, R.string.import_items__device_busy_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(getBaseContext(), FileDialog.class);
+        intent.putExtra(FileDialog.START_PATH, Environment.getExternalStorageDirectory().getPath());
+        intent.putExtra(FileDialog.CAN_SELECT_DIR, false);
+        intent.putExtra(FileDialog.SELECTION_MODE, SelectionMode.MODE_OPEN);
+        intent.putExtra(FileDialog.FORMAT_FILTER, new String[] { FILE_EXTENSION });
+        startActivityForResult(intent, FILE_IMPORT_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if ((resultCode == Activity.RESULT_OK) && (requestCode == FILE_IMPORT_REQUEST_CODE)) {
+            importItems(data.getStringExtra(FileDialog.RESULT_PATH));
+        }
     }
 
     private void removeAllItems() {
