@@ -13,6 +13,8 @@ import android.widget.SimpleCursorAdapter;
  */
 public class MainListAdapter extends SimpleCursorAdapter {
 
+    // private static final String LOG_TAG = MainListAdapter.class.getSimpleName();
+
     private final MainActivity mainActivity;
 
     public MainListAdapter(Context context, int layout, Cursor c, String[] from, int[] to, MainActivity mainActivity) {
@@ -30,6 +32,8 @@ public class MainListAdapter extends SimpleCursorAdapter {
 
         int raiseButtonVisibility;
         int lowerButtonVisibility;
+
+        // Log.i(LOG_TAG, "Setting up item view. isShowingAll=" + this.mainActivity.isShowingAll());
 
         if (!this.mainActivity.isShowingAll()) {
             raiseButtonVisibility = View.GONE;

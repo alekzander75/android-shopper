@@ -16,6 +16,8 @@ import android.widget.SimpleCursorAdapter;
  */
 public class MainActityLoaderCallbacks implements LoaderCallbacks<Cursor> {
 
+    // private static final String LOG_TAG = MainActityLoaderCallbacks.class.getSimpleName();
+
     private static final String[] GET_LIST_ITEMS__COLUMNS = new String[] { ShopItem.ID + " as " + BaseColumns._ID,
             ShopItem.NAME, ShopItem.AMOUNT_TO_BUY };
 
@@ -31,6 +33,7 @@ public class MainActityLoaderCallbacks implements LoaderCallbacks<Cursor> {
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String selection = args.getBoolean(MainActivity.SHOWING_ALL_BUNDLE_KEY) ? null : SHOW_ONLY_SELECTION_SQL;
+        // Log.i(LOG_TAG, "Creating CursorLoader. selection=" + selection);
         return new CursorLoader(this.context, ShopItemContentProvider.ITEMS_CONTENT_URI, GET_LIST_ITEMS__COLUMNS,
                 selection, null, ShopItem.SHOP_ORDER);
     }

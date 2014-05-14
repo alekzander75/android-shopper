@@ -7,9 +7,6 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 
-import com.lamerman.FileDialog;
-import com.lamerman.SelectionMode;
-
 import name.alr.android_shopper.database.ShopItem;
 import name.alr.android_shopper.database.ShopItemContentProvider;
 import android.app.Activity;
@@ -32,6 +29,9 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.lamerman.FileDialog;
+import com.lamerman.SelectionMode;
+
 /**
  * @author alopezruiz@gmail.com (Alejandro Lopez Ruiz)
  */
@@ -42,6 +42,8 @@ public class MainActivity extends Activity {
     private static final String FILE_EXTENSION = "tsv";
     private static final boolean SHOWING_ALL_DEFAULT_VALUE = true;
     private static final int FILE_IMPORT_REQUEST_CODE = 1;
+
+    // private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private final OnRemoveItemMenuItemClickListener onRemoveItemMenuItemClickListener = new OnRemoveItemMenuItemClickListener();
     private final AddItemDialogFragment.SubmitListener dialogSubmitListener = new AddItemDialogSubmitListener();
@@ -59,6 +61,11 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Log.i(LOG_TAG, "Creating main activity. showingAll=" + showingAll);
+        if (savedInstanceState != null) {
+            this.showingAll = savedInstanceState.getBoolean(SHOWING_ALL_BUNDLE_KEY, SHOWING_ALL_DEFAULT_VALUE);
+        }
 
         setContentView(R.layout.main_activity);
 
@@ -128,7 +135,7 @@ public class MainActivity extends Activity {
             return true;
         }
         case (R.id.do_debug_action_menu_item): {
-            doDebugAction();
+            // doDebugAction();
             return true;
         }
         }
@@ -244,26 +251,6 @@ public class MainActivity extends Activity {
         contentValues.put(ShopItem.NAME, name);
         contentValues.put(ShopItem.AMOUNT_TO_BUY, amount);
         getContentResolver().insert(ShopItemContentProvider.ITEMS_CONTENT_URI, contentValues);
-    }
-
-    private void doDebugAction() {
-        // CHECK DATA
-        // Cursor cursor = this.shopperOpenHelper.getItems();
-        // try {
-        // if (cursor.moveToFirst()) {
-        // do {
-        // long id = cursor.getLong(0);
-        // int itemShopOrder = ShopperOpenHelper.getItemShopOrder(cursor);
-        // String itemName = ShopperOpenHelper.getItemName(cursor);
-        //
-        // System.out.println(id + " " + itemShopOrder + " " + itemName);
-        //
-        // cursor.moveToNext();
-        // } while (!cursor.isAfterLast());
-        // }
-        // } finally {
-        // cursor.close();
-        // }
     }
 
     public void mainListEntryAlterButtonOnClick(View view) {
@@ -385,15 +372,6 @@ public class MainActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(SHOWING_ALL_BUNDLE_KEY, showingAll);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState == null) {
-            return;
-        }
-        this.showingAll = savedInstanceState.getBoolean(SHOWING_ALL_BUNDLE_KEY, SHOWING_ALL_DEFAULT_VALUE);
     }
 
 }

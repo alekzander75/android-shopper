@@ -3,7 +3,6 @@ android-shopper
 
 TODO:
 
-fix mode state bug.
 Save mode state even when app is destroyed?
 
 remove_all_items confirm dialog.
