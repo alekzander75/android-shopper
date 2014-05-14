@@ -1,14 +1,12 @@
 package name.alr.android_shopper;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
+import java.util.List;
 
 import name.alr.android_shopper.database.ShopItem;
 import name.alr.android_shopper.database.ShopItemContentProvider;
+import name.alr.android_shopper.util.IoUtils;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentValues;
@@ -142,17 +140,8 @@ public class MainActivity extends Activity {
         return false;
     }
 
-    private boolean isExternalStorageWritable() {
-        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
-    }
-
-    private boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
-    }
-
     private void exportItems() {
-        if (!isExternalStorageWritable()) {
+        if (!IoUtils.isExternalStorageWritable()) {
             Toast.makeText(this, R.string.export_items__device_busy_error, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -184,23 +173,7 @@ public class MainActivity extends Activity {
     }
 
     private void importItems(String filePath) {
-        File file = new File(filePath);
-
-        LinkedList<String> lines = new LinkedList<String>();
-        try {
-            FileInputStream stream = new FileInputStream(file);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            try {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    lines.add(line);
-                }
-            } finally {
-                reader.close();
-            }
-        } catch (Exception exception) {
-            throw new RuntimeException("Failed to read file.", exception);
-        }
+        List<String> lines = IoUtils.toStrings(new File(filePath));
 
         // better safe than sorry
         if (!lines.isEmpty()) {
@@ -216,7 +189,7 @@ public class MainActivity extends Activity {
     }
 
     private void chooseFileForImport() {
-        if (!isExternalStorageReadable()) {
+        if (!IoUtils.isExternalStorageReadable()) {
             Toast.makeText(this, R.string.import_items__device_busy_error, Toast.LENGTH_SHORT).show();
             return;
         }
