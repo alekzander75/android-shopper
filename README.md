@@ -3,10 +3,6 @@ android-shopper
 
 TODO:
 
-Save mode state even when app is destroyed?
-
-remove_all_items confirm dialog.
-
 Improve export-import data functions.
 	App data folders?
 		https://developers.google.com/drive/web/appdata
@@ -14,6 +10,8 @@ Improve export-import data functions.
 		Maybe check if that exists and if not then use the FileExplorer lib intent.
 
 Drag-n-drop to reorder items.
+
+Save mode state even when app is destroyed?
 
 Slide left to delete item.
 

@@ -46,7 +46,8 @@ public class MainActivity extends Activity {
     // private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private final OnRemoveItemMenuItemClickListener onRemoveItemMenuItemClickListener = new OnRemoveItemMenuItemClickListener();
-    private final AddItemDialogFragment.SubmitListener dialogSubmitListener = new AddItemDialogSubmitListener();
+    private final AddItemDialogFragment.SubmitListener addItemListener = new AddItemDialogSubmitListener();
+    private final ConfirmDialogFragment.Listener confirmListener = new ConfirmDialogListener();
 
     private ListView listView;
 
@@ -114,7 +115,7 @@ public class MainActivity extends Activity {
         }
         case (R.id.add_item_menu_item): {
             AddItemDialogFragment dialogFragment = new AddItemDialogFragment();
-            dialogFragment.setSubmitListener(dialogSubmitListener);
+            dialogFragment.setSubmitListener(addItemListener);
             dialogFragment.show(getFragmentManager(), null);
             return true;
         }
@@ -127,11 +128,9 @@ public class MainActivity extends Activity {
             return true;
         }
         case (R.id.remove_all_items_menu_item): {
-            // TODO: add confirm dialog
-            // https://stackoverflow.com/questions/12912181/simplest-yes-no-dialog-fragment
-            // TODO: re-enable after adding confirm dialog
-            // removeAllItems();
-            // Toast.makeText(this, R.string.remove_all_items__toast, Toast.LENGTH_SHORT).show();
+            ConfirmDialogFragment dialogFragment = ConfirmDialogFragment.newInstance(
+                    R.string.remove_all_items__confirm_dialog__title, this.confirmListener);
+            dialogFragment.show(getFragmentManager(), null);
             return true;
         }
         case (R.id.do_debug_action_menu_item): {
@@ -365,6 +364,13 @@ public class MainActivity extends Activity {
     private final class AddItemDialogSubmitListener implements AddItemDialogFragment.SubmitListener {
         public void onSubmit(String name) {
             addItem(name, 1);
+        }
+    }
+
+    private final class ConfirmDialogListener implements ConfirmDialogFragment.Listener {
+        public void onConfirm() {
+            removeAllItems();
+            Toast.makeText(getApplicationContext(), R.string.remove_all_items__toast, Toast.LENGTH_SHORT).show();
         }
     }
 

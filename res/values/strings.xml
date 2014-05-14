@@ -3,11 +3,13 @@
     <string name="app_name">Android Shopper</string>
     <string name="add_item__title">Add</string>
     <string name="cancel">Cancel</string>
+    <string name="confirm_dialog__message">Are you sure?</string>
     <string name="do_debug_action__label">Do Magic</string>
     <string name="main_activity__label">Shopper</string>
     <string name="remove_item__title">Remove</string>
     <string name="remove_all_items__title">Remove All</string>
     <string name="remove_all_items__toast">Removed All</string>
+    <string name="remove_all_items__confirm_dialog__title">Delete All</string>
     <string name="export_items__title">Export To File</string>
     <!-- <string name="export_items__toast">Exported To File</string> -->
     <string name="export_items__device_busy_error">External storage is not writable.</string>
