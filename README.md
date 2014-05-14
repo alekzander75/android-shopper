@@ -3,8 +3,6 @@ android-shopper
 
 TODO:
 
-Move FileExplorer classes into main project.
-
 fix mode state bug.
 Save mode state even when app is destroyed?
 

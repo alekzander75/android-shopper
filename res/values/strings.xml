@@ -26,5 +26,18 @@
     <string name="lower_item_amount__text">V</string>
     <string name="item_name">Item Name</string>
     <string name="toggle_shown__title">Toggle Shown</string>
+    
+<!--         <string name="app_name">File dialog</string> -->
+    <string name="location">Location</string>
+    <string name="cant_read_folder">folder can\'t be read!</string>
+    <string name="nnew">New</string>
+    <string name="select">Select</string>
+    <string name="file_name">File name:</string>
+<!--     <string name="cancel">Cancel</string> -->
+    <string name="create">Save</string>
+    <string name="no_data">No Data</string>
+<!--     <color name="gray">#ffff0000</color> -->
+<!--     <string name="err">Error</string> -->
+    
 
 </resources>
